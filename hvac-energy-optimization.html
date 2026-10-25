@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HVAC Energy Optimization</title>
+<meta name="description" content="Cutting HVAC energy cost across a retail network without losing thermal comfort.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#work">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>HVAC Energy Optimization</h1>
+    <p class="field">Regression and daily scoring, AutoZone client engagement</p>
+    <p class="lede">Modeling HVAC energy use against weather and operating conditions across a retail network, with daily scoring so the recommendations stayed current as conditions changed.</p>
+  </div>
+
+  <div class="casemeta">
+        <div><b>Role</b><span>Data Science Intern, Predictive Analytics</span></div>
+        <div><b>Client</b><span>AutoZone engagement</span></div>
+        <div><b>Timeline</b><span>June 2025 - December 2025</span></div>
+        <div><b>Headline</b><span>$1.8M annual savings</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>HVAC is one of the largest energy costs across a retail store network. The business wanted that cost down, but not at the price of making stores uncomfortable for customers and staff, which is the easy way to save energy and the fastest way to have the savings reversed.</p>
+    <p>That framed the work: understand how HVAC energy responds to weather and operating conditions, then find where settings could change <strong>without</strong> crossing a comfort threshold.</p>
+  </section>
+
+  <section>
+    <h2>The data</h2>
+    <ul>
+      <li><strong>HVAC telemetry</strong> from store systems.</li>
+      <li><strong>Weather</strong> observations and store <strong>operating conditions</strong>.</li>
+      <li>Queried with <strong>SQL</strong>, modeled in <strong>Python</strong>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Approach</h2>
+    <ol>
+      <li><strong>Frame the objective.</strong> Translated a business efficiency target into something measurable a model could optimize against.</li>
+      <li><strong>Repeatable features.</strong> Built a feature-generation process that held up across changing environmental and operating conditions, rather than a one-off extract.</li>
+      <li><strong>Modeling.</strong> Regression models of energy use under varying conditions.</li>
+      <li><strong>Daily scoring.</strong> Set up scoring workflows that ran daily, so recommendations reflected current conditions instead of a snapshot taken months earlier.</li>
+      <li><strong>Recommendations.</strong> Converted model output into operating recommendations, each checked against thermal-comfort limits before it was proposed.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Measure</th><th>Result</th></tr>
+        <tr><td>Annual savings supported</td><td>$1.8M</td></tr>
+        <tr><td>Energy cost reduction</td><td>5%</td></tr>
+        <tr><td>CO₂ reduction</td><td>8.34M lbs</td></tr>
+        <tr><td>Thermal comfort</td><td>Maintained</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What I took from it</h2>
+    <ul>
+      <li>Savings only materialise from recommendations people are willing to adopt. Holding comfort as a hard constraint is what made these adoptable.</li>
+      <li>Daily scoring was not a nicety. Weather and store operations change constantly, and a static recommendation goes stale within weeks.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What I would do next</h2>
+    <ul>
+      <li>Extend the models into anomaly detection, to flag failing equipment before it shows up as a cost.</li>
+      <li>Run recommendations as an A/B test across store groups, to measure causal impact rather than infer it.</li>
+    </ul>
+  </section>
+
+
+  <div class="nextprev">
+      <a href="large-cohort-risk-prediction.html">Next: Large-Cohort Risk Prediction</a>
+      <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

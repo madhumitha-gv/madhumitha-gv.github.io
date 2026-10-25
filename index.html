@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Venkata Madhumitha</title>
+<meta name="description" content="Venkata Madhumitha, data scientist. Energy demand forecasting, telemetry modeling, and the pipelines and dashboards behind them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <strong>Madhumitha</strong>
+    <nav aria-label="Sections">
+      <a href="#roles">Experience</a>
+      <a href="#work">Work</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#reach">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="herorow">
+    <div class="open">
+      <h1>Venkata<br><em>Madhumitha</em></h1>
+      <p class="say">Full-stack data scientist. I forecast energy demand and turn operational data into decisions the business acts on.</p>
+      <p class="roles"><span>End-to-end analytics</span><span>Product builder</span><span>Drives business decisions</span></p>
+      <p class="where"><a href="https://linkedin.com/in/madhumithagv" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg><span>LinkedIn</span></a><a href="https://github.com/madhumitha-gv" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .3z"/></svg><span>GitHub</span></a></p>
+    </div>
+
+    <figure>
+      <svg class="plot" viewBox="0 0 760 250" role="img" aria-label="A daily electricity load curve. Demand dips overnight, ramps through the morning, plateaus at midday, and peaks in the early evening. A dashed forecast line tracks it closely.">
+        <g id="plot-grid"></g>
+        <path id="p-actual" class="actual" d=""></path>
+        <path id="p-fc" class="fc" d=""></path>
+        <g id="p-peak"></g>
+      </svg>
+      <div class="key">
+        <span><i></i><b>Measured demand</b></span>
+        <span class="f"><i></i><b>Model forecast</b></span>
+      </div>
+      <figcaption>The shape a load forecast has to learn: an overnight trough, a morning ramp, and the evening peak that sets the day's capacity.</figcaption>
+    </figure>
+  </div>
+
+  <div class="readout">
+    <div><b>3+</b><span>years in data science</span></div>
+    <div><b>100TB+</b><span>processed in Databricks pipelines</span></div>
+    <div><b>$1.8M</b><span>annual energy savings supported</span></div>
+    <div><b>0.976</b><span>best model ROC-AUC</span></div>
+  </div>
+
+  <section id="about">
+    <div class="titleblock"><h2>About</h2></div>
+    <div class="aboutrow">
+      <div class="prose">
+        <p>I'm a data scientist who works end to end. I start from the business question, build the pipeline and the model that answer it, and finish with the dashboard and the recommendation the people responsible can act on.</p>
+        <p>Most of that work has been operational data at scale: energy demand and HVAC telemetry, fleet and asset records, and <strong>100TB+</strong> through Databricks pipelines at <strong>Deloitte</strong>. What matters to me is whether a result holds up once it ships, which means a baseline the model has to beat and findings a non-technical stakeholder can follow and act on.</p>
+      </div>
+      <figure class="portrait">
+        <span class="pframe">
+          <img class="pbg" src="photo.jpg" alt="" aria-hidden="true">
+          <img class="pfg" src="photo.jpg" width="560" height="747" alt="Venkata Madhumitha at the Luddy School of Informatics, Computing, and Engineering">
+        </span>
+      </figure>
+    </div>
+  </section>
+
+  <section id="roles">
+    <div class="titleblock"><h2>Experience</h2></div>
+    <div class="role">
+      <div><h3>Senior Consultant (operations analytics)</h3><p class="co">Heartland Community Network, remote</p></div>
+      <div class="when">June 2026 - Present</div>
+      <ul>
+        <li>Analyzed 2M+ GPS, fuel, vehicle and asset records in Python and SQL for utilization, uptime and maintenance trends.</li>
+        <li>Engineered reusable PySpark feature, validation and anomaly-detection workflows, cutting recurring data preparation by 75%.</li>
+        <li>Presented Power BI findings to leadership, flagging underused assets, faults and maintenance priorities.</li>
+      </ul>
+    </div>
+    <div class="role">
+      <div><h3>Data scientist (Public health data analytics)</h3><p class="co">Indiana University, Bloomington</p></div>
+      <div class="when">June 2025 - May 2026</div>
+      <ul>
+        <li>Built a 200,000-participant analytical cohort in SQL, integrating demographics, medications, comorbidities and clinical features.</li>
+        <li>Developed PCA and XGBoost pipelines under 5-fold cross-validation, reaching 0.802 AUROC and 0.379 PR-AUC.</li>
+        <li>Applied statistical testing, calibration, ablation and subgroup analysis to interpret and communicate model drivers.</li>
+      </ul>
+    </div>
+    <div class="role">
+      <div><h3>Data Science Intern</h3><p class="co">AutoZone client engagement, remote</p></div>
+      <div class="when">June 2025 - December 2025</div>
+      <ul>
+        <li>Turned energy-efficiency goals into modeling objectives from HVAC telemetry, weather and operating conditions.</li>
+        <li>Built regression models with repeatable feature generation and daily scoring across changing conditions.</li>
+        <li>Recommendations supported $1.8M in annual savings, 5% lower energy costs and 8.34M lbs of CO&#8322; reduction.</li>
+      </ul>
+    </div>
+    <div class="role">
+      <div><h3>Analyst (Solution Delivery &amp; Data Engineering)</h3><p class="co">Deloitte, Hyderabad</p></div>
+      <div class="when">June 2022 - July 2024</div>
+      <ul>
+        <li>Engineered Azure Databricks, PySpark and SQL pipelines processing 100TB+ while holding 99%+ data integrity.</li>
+        <li>Standardized cleansing, validation, reconciliation and exception handling across 10M+ records.</li>
+        <li>Automated validation and metadata workflows, removing 200+ manual hours a month.</li>
+        <li>Cut query turnaround 70%, and incident resolution time 30% through Power BI reporting to C-suite stakeholders.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="school">
+    <div class="titleblock"><h2>Education</h2></div>
+    <div class="role">
+      <div><h3>Master of Science, Data Science</h3><p class="co">Indiana University Bloomington, IN (GPA 3.9/4.0)</p></div>
+      <div class="when">August 2024 - May 2026</div>
+      <dl class="facts">
+        <dt>Coursework</dt><dd>Big Data Applications, Data Mining, Advanced Database Concepts, Information Visualization, Advanced NLP, Statistics, LLMs and their applications</dd>
+      </dl>
+    </div>
+    <div class="role">
+      <div><h3>Bachelor of Technology, Electronics and Communication Engineering</h3><p class="co">K L University, Guntur, India</p></div>
+      <div class="when">August 2018 - April 2022</div>
+      <dl class="facts">
+        <dt>Specialization</dt><dd>Data computing</dd>
+        <dt>Coursework</dt><dd>Image Processing, Digital System Design, Digital Signal Processing, Machine Learning, Pattern Recognition, Hadoop and Big Data Applications, Data Visualization</dd>
+      </dl>
+    </div>
+
+    <div class="titleblock certs"><h2>Certifications</h2></div>
+    <ul class="certlist">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5.5"/><path d="M8.4 13.4 7 21.5l5-2.5 5 2.5-1.4-8.1"/></svg>AWS Certified AI Practitioner <span>(Amazon Web Services)</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5.5"/><path d="M8.4 13.4 7 21.5l5-2.5 5 2.5-1.4-8.1"/></svg>Power BI Data Analyst Associate <span>(Microsoft)</span></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5.5"/><path d="M8.4 13.4 7 21.5l5-2.5 5 2.5-1.4-8.1"/></svg>OCI AI Foundations Associate <span>(Oracle)</span></li>
+    </ul>
+
+  </section>
+
+  <section id="pub">
+    <div class="titleblock"><h2>Publication</h2></div>
+    <article class="pubcard">
+      <h3>Machine learning based object-level crop classification of PlanetScope data at South India Basin</h3>
+      <p class="journal">Earth Science Informatics, Springer</p>
+      <p class="more"><a href="https://link.springer.com/article/10.1007/s12145-022-00922-4" target="_blank" rel="noopener">View on Springer</a></p>
+    </article>
+  </section>
+
+  <section id="work">
+    <div class="titleblock"><h2>Case studies</h2></div>
+
+    <div class="entries">
+    <article class="entry">
+      <div class="body">
+        <h3>Energy Demand Forecasting</h3>
+        <p class="field">Time series modeling on hourly demand and weather</p>
+        <p>A load-forecasting workflow across 50,000+ hourly demand and weather records. I engineered temporal and environmental features, validated against a baseline the models had to beat, and reported peak-load drivers through Power BI.</p>
+        <p class="more"><a href="energy-demand-forecasting.html">View case study</a></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="body">
+        <h3>HVAC Energy Optimization</h3>
+        <p class="field">Regression and daily scoring, AutoZone client engagement</p>
+        <p>HVAC is one of the largest energy costs across a retail network. I translated efficiency targets into modeling objectives, built regression models over telemetry, weather and operating conditions, and set up daily scoring so recommendations stayed current as conditions changed.</p>
+        <p class="more"><a href="hvac-energy-optimization.html">View case study</a></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="body">
+        <h3>Large-Cohort Risk Prediction</h3>
+        <p class="field">Predictive modeling and statistical evaluation, Indiana University</p>
+        <p>I built the 200,000-participant analytical cohort in SQL, then a PCA and XGBoost pipeline under 5-fold cross-validation. With a rare outcome, accuracy alone would have flattered the model, so evaluation led with PR-AUC and calibration.</p>
+        <p class="more"><a href="large-cohort-risk-prediction.html">View case study</a></p>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  <section id="built">
+    <div class="titleblock"><h2>Recent side projects</h2></div>
+    <div class="list">
+      <div class="row">
+        <div>
+          <h3>Human Reference Atlas Usage Analytics</h3>
+          <p class="d">The HRA dashboard reported traffic volumes but told its developers nothing about how researchers actually move through the registration and exploration interfaces. I pulled 250,853 Google Analytics events through BigQuery, cleaned them down to the 50,000 that carried real interaction signal, and mapped them with an hourly click heatmap, a Sankey of event-to-event transitions and a treemap, showing that placement and node selection dominate the workflow while filters such as sex and side go almost unused, which gave the UX team a concrete discoverability gap to close.</p>
+        </div>
+        <div class="links">
+          <span class="met">250,853 events analyzed</span>
+          <span class="stack">Google Analytics, BigQuery, Pandas, PM4Py, Plotly</span>
+          <a href="https://docs.google.com/document/d/1uz7vreOzreWLyboQrv101cdnDWT9Gq9s/edit" target="_blank" rel="noopener">View project</a>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>RAG Course Advisor Chatbot</h3>
+          <p class="d">Graduate students at IU Luddy were digging through ten separate program handbooks to answer one question about a course code or an elective. I built a chatbot that fuses BM25 and FAISS retrieval through reciprocal rank fusion, so exact codes and vaguely worded questions both resolve, and Mistral answers with citations back to the source handbook.</p>
+        </div>
+        <div class="links">
+          <span class="met">Ten handbooks across eight programs</span>
+          <span class="stack">FAISS, BM25, Mistral, Streamlit</span>
+          <a href="https://github.com/madhumitha-gv/RAG-Course-Advisor-Chatbot" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Multi-Agent Travel Discovery Planner</h3>
+          <p class="d">Every travel planner asks you to choose a destination first, which is the hardest part when you only know the kind of trip you want. I built six LangGraph agents that infer a persona from free text, rank 500 cities by embedding similarity and gate on live weather, walking the shortlist until a city passes, and deployed it on Azure Container Apps.</p>
+        </div>
+        <div class="links">
+          <span class="met">500 cities checked in ~1.6s</span>
+          <span class="stack">LangGraph, DeBERTa-v3, Mistral-7B, Azure</span>
+          <a href="https://github.com/madhumitha-gv/Multi-Agent-Travel-Discovery-Planner" target="_blank" rel="noopener">View on GitHub</a>
+          <a href="https://travel-planner.gentlemushroom-48179c71.centralus.azurecontainerapps.io" target="_blank" rel="noopener">Live demo</a>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Document Processing Pipeline</h3>
+          <p class="d">Scanned documents arrive blurred, stained and creased, and standard OCR fails on all of it. In 24 hours at IU Hackathon 2026 I built a U-Net that denoises the page to 43 dB PSNR, TrOCR that reads it at 90% character accuracy, and an adaptive Huffman encoder written from scratch that recovers the text losslessly on every run.</p>
+        </div>
+        <div class="links">
+          <span class="met">43 dB peak PSNR, 100% lossless</span>
+          <span class="stack">PyTorch, U-Net, TrOCR, FastAPI, React</span>
+          <a href="https://github.com/madhumitha-gv/OCR-engine" target="_blank" rel="noopener">View on GitHub</a>
+          <a href="https://www.youtube.com/watch?v=3fcLQcOCGw4" target="_blank" rel="noopener">Demo video</a>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Workplace Mental Health Risk Prediction</h3>
+          <p class="d">Employers catch mental health risk late, through questionnaires and interviews that miss the early signals. I modeled 1,467 tech-industry survey responses with composite indices for employer support, workplace stigma and organizational openness, reached 0.83 F1, and served the result through a Streamlit app and FastAPI backend where SHAP explains every individual score.</p>
+        </div>
+        <div class="links">
+          <span class="met">0.83 F1, ~85% accuracy</span>
+          <span class="stack">XGBoost, SHAP, FastAPI, Streamlit</span>
+          <a href="https://github.com/madhumitha-gv/Workplace-Mental-Health-Risk-Prediction" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <h3>E-Commerce Big Data Analytics</h3>
+          <p class="d">Raw Amazon sales files were too large to query directly or model against. I built an AWS pipeline that lands the data in S3, transforms it with PySpark on EC2, and feeds the processed output to both SageMaker AutoML training and a Power BI revenue dashboard.</p>
+        </div>
+        <div class="links">
+          <span class="stack">AWS, PySpark, SageMaker, Power BI</span>
+          <a href="https://github.com/madhumitha-gv/EcommerceBigDataAnalytics" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="toolkit">
+    <div class="titleblock"><h2>Toolkit</h2></div>
+    <div class="tabs" role="tablist" aria-label="Skill categories">
+      <button class="tab" role="tab" id="t-ai" aria-selected="true" data-cat="ai">AI and ML</button>
+      <button class="tab" role="tab" id="t-ds" aria-selected="false" data-cat="ds">Big Data Engineering</button>
+      <button class="tab" role="tab" id="t-biz" aria-selected="false" data-cat="biz">Business analytics</button>
+      <button class="tab" role="tab" id="t-cloud" aria-selected="false" data-cat="cloud">Cloud</button>
+      <button class="tab" role="tab" id="t-app" aria-selected="false" data-cat="app">Application development</button>
+    </div>
+    <div class="tools" id="tools" role="tabpanel" aria-live="polite"></div>
+  </section>
+
+  <section id="reach">
+    <div class="titleblock"><h2>Get in touch</h2></div>
+    <p class="intro">I'm always up for collaborating on exciting projects. Feel free to connect.</p>
+    <div class="cinfo">
+      <div class="cline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6 8.5-6"/></svg>
+        <div>
+          <b>Email</b>
+          <span><a class="mail" id="mail" href="mailto:gannavarammadhumitha@gmail.com">gannavarammadhumitha@gmail.com</a></span>
+          <button class="copy" id="copy" type="button">Copy email</button>
+          <span class="said" id="said" role="status"></span>
+        </div>
+      </div>
+      <div class="cline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <div><b>Location</b><span>Aurora, Colorado. Open to relocation.</span></div>
+      </div>
+      <div class="cline">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.8-2.8a4 4 0 0 0-5.7-5.7l-1.3 1.3"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0L5 13.3a4 4 0 0 0 5.7 5.7l1.3-1.3"/></svg>
+        <div><b>Connect</b><span class="clinks"><a href="https://linkedin.com/in/madhumithagv" target="_blank" rel="noopener">LinkedIn</a><a href="https://github.com/madhumitha-gv" target="_blank" rel="noopener">GitHub</a></span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Venkata Madhumitha, 2026.</footer>
+</div>
+
+<script>
+(function () {
+  var W = 760, H = 250, L = 34, R = 8, T = 22, B = 26;
+  // Normalized hourly demand: overnight trough, morning ramp, midday plateau, evening peak.
+  var actual = [0.34,0.31,0.29,0.28,0.29,0.34,0.45,0.58,0.64,0.66,0.67,0.69,0.70,0.69,0.70,0.73,0.80,0.90,0.97,1.00,0.93,0.78,0.60,0.45];
+  var fc     = [0.36,0.32,0.30,0.28,0.30,0.36,0.47,0.56,0.62,0.67,0.69,0.68,0.69,0.70,0.71,0.75,0.81,0.88,0.95,0.98,0.95,0.80,0.61,0.44];
+  function x(i) { return L + (W - L - R) * (i / 23); }
+  function y(v) { return T + (H - T - B) * (1 - (v - 0.2) / 0.85); }
+  function curve(vals) {
+    var d = 'M' + x(0).toFixed(1) + ' ' + y(vals[0]).toFixed(1);
+    for (var i = 0; i < vals.length - 1; i++) {
+      var xm = (x(i) + x(i + 1)) / 2;
+      d += ' C' + xm.toFixed(1) + ' ' + y(vals[i]).toFixed(1) + ' ' + xm.toFixed(1) + ' ' + y(vals[i + 1]).toFixed(1) + ' ' + x(i + 1).toFixed(1) + ' ' + y(vals[i + 1]).toFixed(1);
+    }
+    return d;
+  }
+  var g = '', levels = [0.4, 0.6, 0.8, 1.0];
+  for (var k = 0; k < levels.length; k++) {
+    var yy = y(levels[k]).toFixed(1);
+    g += '<line class="grid" x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '"/>';
+    g += '<text class="axis" x="0" y="' + (parseFloat(yy) + 4) + '">' + Math.round(levels[k] * 100) + '%</text>';
+  }
+  [0, 6, 12, 18, 23].forEach(function (h) {
+    var lab = h === 23 ? '24:00' : (h < 10 ? '0' + h : h) + ':00';
+    g += '<text class="axis" x="' + x(h).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + (h === 0 ? 'start' : h === 23 ? 'end' : 'middle') + '">' + lab + '</text>';
+  });
+  document.getElementById('plot-grid').innerHTML = g;
+
+  var pa = document.getElementById('p-actual'), pf = document.getElementById('p-fc');
+  pa.setAttribute('d', curve(actual));
+  pf.setAttribute('d', curve(fc));
+
+  var pk = 19;
+  document.getElementById('p-peak').innerHTML =
+    '<circle class="peak-dot" cx="' + x(pk).toFixed(1) + '" cy="' + y(actual[pk]).toFixed(1) + '" r="3.5"/>' +
+    '<text class="peak-txt" x="' + (x(pk) - 8).toFixed(1) + '" y="' + (y(actual[pk]) - 10).toFixed(1) + '" text-anchor="end">evening peak</text>';
+
+  // One orchestrated moment: the measured line draws itself, the forecast follows it in.
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    [[pa, 0], [pf, 400]].forEach(function (pair) {
+      var p = pair[0], len = p.getTotalLength();
+      p.style.strokeDasharray = len + ' ' + len;
+      p.style.strokeDashoffset = len;
+      p.getBoundingClientRect();
+      p.style.transition = 'stroke-dashoffset 1400ms cubic-bezier(.4,0,.2,1) ' + pair[1] + 'ms';
+      p.style.strokeDashoffset = '0';
+    });
+    setTimeout(function () { pf.style.transition = 'none'; pf.style.strokeDasharray = '5 4'; pf.style.strokeDashoffset = '0'; }, 1900);
+  } else {
+    pf.style.strokeDasharray = '5 4';
+  }
+
+  var ICONS = {
+    chart: '<path d="M4 20V4M4 20h16M8 16v-6M12 16V7M16 16v-4"/>',
+    brain: '<circle cx="12" cy="12" r="2.6"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5" cy="18" r="1.8"/><circle cx="19" cy="18" r="1.8"/><path d="M6.6 7.4 10 10.4M17.4 7.4 14 10.4M6.6 16.6 10 13.6M17.4 16.6 14 13.6"/>',
+    wave: '<path d="M3 15c2.5 0 2.5-6 5-6s2.5 9 5 9 2.5-12 5-12 2.5 6 3 6"/>',
+    layers: '<path d="M12 3l9 4.8-9 4.8-9-4.8z"/><path d="M3 12.6 12 17.4l9-4.8M3 17.4 12 22.2l9-4.8"/>',
+    db: '<ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+    cloud: '<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/>',
+    code: '<path d="M8.5 8 4 12l4.5 4M15.5 8 20 12l-4.5 4M13.5 5l-3 14"/>',
+    box: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+    chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+    find: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
+    grid: '<rect x="3.5" y="3.5" width="17" height="17" rx="1.5"/><path d="M3.5 9.5h17M3.5 15h17M9.5 3.5v17"/>',
+    gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="0.6"/>',
+    branch: '<circle cx="6.5" cy="5.5" r="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="9" r="2"/><path d="M6.5 7.5v9M8.5 9h5.2c.9 0 1.8.6 1.8 1.6V11"/>'
+  };
+  var SKILLS = {
+    ai: [['PyTorch','brain'],['XGBoost','brain'],['scikit-learn','chart'],['Hugging Face','brain'],['LangGraph','branch'],['FAISS','find'],['SHAP','find']],
+    ds: [['Python','code'],['R','chart'],['SQL','db'],['Pandas','layers'],['NumPy','layers'],['Databricks','layers'],['Apache Spark','layers'],['PySpark','code'],['Hadoop','layers'],['Snowflake','db'],['BigQuery','db'],['PostgreSQL','db'],['SQL Server','db']],
+    biz: [['Power BI','grid'],['DAX','code'],['Tableau','grid'],['Power Apps','grid'],['Process Automation','gear']],
+    cloud: [['AWS','cloud'],['Azure','cloud'],['GCP','cloud'],['SageMaker','cloud'],['S3','box'],['EC2','box'],['Azure Container Apps','cloud']],
+    app: [['FastAPI','code'],['Streamlit','grid'],['React','code'],['Docker','box'],['Git','branch'],['Bash','code']]
+  };
+
+
+
+
+
+  function paint(cat) {
+    document.getElementById('tools').innerHTML = SKILLS[cat].map(function (t) {
+      return '<div class="tool"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[t[1]] + '</svg>' + t[0] + '</div>';
+    }).join('');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (tab) {
+    tab.addEventListener('click', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (o) {
+        o.setAttribute('aria-selected', o === tab ? 'true' : 'false');
+      });
+      paint(tab.dataset.cat);
+    });
+  });
+  paint('ai');
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var el = document.getElementById('mail'), said = document.getElementById('said');
+    function pick() {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      said.textContent = 'Email selected. Press Ctrl+C or Command+C to copy.';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(el.textContent).then(function () { said.textContent = 'Copied.'; }, pick);
+    } else { pick(); }
+  });
+})();
+</script>
+</body>
+</html>

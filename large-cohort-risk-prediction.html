@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Large-Cohort Risk Prediction</title>
+<meta name="description" content="A calibrated, interpretable prediction pipeline over a 200,000-participant cohort.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#work">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Large-Cohort Risk Prediction</h1>
+    <p class="field">Predictive modeling and statistical evaluation, Indiana University</p>
+    <p class="lede">Building a 200,000-participant analytical cohort in SQL and a PCA and XGBoost pipeline on top of it, evaluated for calibration and fairness rather than headline accuracy alone.</p>
+  </div>
+
+  <div class="casemeta">
+        <div><b>Role</b><span>Data scientist, public health data analytics</span></div>
+        <div><b>Organization</b><span>Indiana University</span></div>
+        <div><b>Timeline</b><span>June 2025 - May 2026</span></div>
+        <div><b>Headline</b><span>0.802 AUROC</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Predict an outcome across a large population from many overlapping attributes, and do it in a way somebody would be willing to act on. With a rare outcome, a model can look excellent on accuracy while being useless in practice, so the work had to be <strong>trustworthy and explainable</strong>, not just performant.</p>
+  </section>
+
+  <section>
+    <h2>The data</h2>
+    <ul>
+      <li><strong>200,000+ participants</strong>, assembled in <strong>SQL</strong>.</li>
+      <li>Demographics, medications, comorbidities and clinical features integrated into a single analytical table.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Approach</h2>
+    <ol>
+      <li><strong>Cohort construction.</strong> Wrote the SQL defining the cohort and joining every feature source into one table.</li>
+      <li><strong>Dimensionality reduction.</strong> Used <strong>PCA</strong> to compress heavily correlated features.</li>
+      <li><strong>Modeling.</strong> Trained <strong>XGBoost</strong> under <strong>5-fold cross-validation</strong>.</li>
+      <li><strong>Evaluation.</strong> Led with PR-AUC rather than AUROC, since the positive class is rare and AUROC flatters a model in that setting. Checked <strong>calibration</strong>, ran <strong>ablation studies</strong> and <strong>subgroup analysis</strong>, and used statistical testing to confirm differences were real.</li>
+      <li><strong>Communication.</strong> Turned the evaluation into findings and recommendations the research team could act on.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Measure</th><th>Result</th></tr>
+        <tr><td>AUROC</td><td>0.802</td></tr>
+        <tr><td>PR-AUC</td><td>0.379</td></tr>
+        <tr><td>Validation</td><td>5-fold cross-validation</td></tr>
+        <tr><td>Cohort size</td><td>200,000+</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What I took from it</h2>
+    <ul>
+      <li>PR-AUC is the honest metric when positives are rare. Reporting AUROC alone would have made this model look considerably better than it is.</li>
+      <li>Ablation studies showed which feature groups genuinely earn their place, and several did not.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What I would do next</h2>
+    <ul>
+      <li>Validate against an external cohort, or one drawn from a later time period.</li>
+      <li>Add SHAP explanations at the level of individual predictions, not just global importance.</li>
+    </ul>
+  </section>
+
+
+  <div class="nextprev">
+      <a href="energy-demand-forecasting.html">Next: Energy Demand Forecasting</a>
+      <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

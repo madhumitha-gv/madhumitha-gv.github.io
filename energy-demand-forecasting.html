@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Energy Demand Forecasting</title>
+<meta name="description" content="Forecasting hourly electricity demand from weather and load history.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#work">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Energy Demand Forecasting</h1>
+    <p class="field">Time series modeling on hourly demand and weather</p>
+    <p class="lede">A load-forecasting workflow across 50,000+ hourly demand and weather records, built to beat a baseline and to explain what drives the evening peak rather than only predicting it.</p>
+  </div>
+
+  <div class="casemeta">
+        <div><b>Role</b><span>Sole data scientist</span></div>
+        <div><b>Domain</b><span>Energy, time series</span></div>
+        <div><b>Tools</b><span>Python, SQL, XGBoost, Power BI</span></div>
+        <div><b>Headline</b><span>8.9% MAPE</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>A utility has to plan generation, purchasing and staffing around how much electricity its customers will use. Under-forecast the peak and reliability is at risk; over-forecast it and the company pays for capacity it never needs.</p>
+    <p>So the goal was two things at once: a forecast accurate enough to plan against, and a clear read on <strong>what actually drives the peak</strong>. A number on its own does not tell a planner what to do differently.</p>
+  </section>
+
+  <section>
+    <h2>The data</h2>
+    <ul>
+      <li><strong>50,000+ hourly records</strong> of electricity demand, joined against weather observations for the same hours.</li>
+      <li>Queried and joined in <strong>SQL</strong>, then cleaned and explored in <strong>Python</strong>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Approach</h2>
+    <ol>
+      <li><strong>Baseline first.</strong> Before any modeling, I set a simple baseline so every later model had a number it was required to beat. Without one, an impressive-looking error rate means nothing.</li>
+      <li><strong>Feature engineering.</strong> Temporal features covering calendar effects, time-of-day patterns and recent demand history, plus environmental features derived from the weather data.</li>
+      <li><strong>Modeling.</strong> Regression and <strong>XGBoost</strong> models trained and compared under time-aware validation, so the model never trains on hours that come after the ones it is tested on. Random splits leak the future into training and flatter the result.</li>
+      <li><strong>Reporting.</strong> Results published to <strong>Power BI</strong> dashboards covering peak-load drivers, demand trends and operational KPIs.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Measure</th><th>Result</th></tr>
+        <tr><td>Forecast error (MAPE)</td><td>8.9%</td></tr>
+        <tr><td>Error against baseline</td><td>18% lower</td></tr>
+        <tr><td>Records modeled</td><td>50,000+ hourly</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>What I took from it</h2>
+    <ul>
+      <li>Weather and time-of-day features carry most of the signal for peak demand.</li>
+      <li>The dashboard mattered as much as the model. Planners asked "why is the peak moving?" more often than "what is the peak?", and a forecast that cannot answer the first question gets ignored.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What I would do next</h2>
+    <ul>
+      <li>Add prediction intervals, so planners see the uncertainty around a forecast rather than a single point.</li>
+      <li>Retrain on a schedule and monitor for drift as seasonal weather patterns shift.</li>
+    </ul>
+  </section>
+
+
+  <div class="nextprev">
+      <a href="hvac-energy-optimization.html">Next: HVAC Energy Optimization</a>
+      <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>
