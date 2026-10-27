@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Large-Cohort Risk Prediction</title>
-<meta name="description" content="A calibrated, interpretable prediction pipeline over a 200,000-participant cohort.">
+<meta name="description" content="Cohort engineering and predictive modeling on 200,000+ participants: problem, root cause, countermeasure and result.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
@@ -21,74 +21,88 @@
 <div class="wrap case">
   <div class="casehead">
     <h1>Large-Cohort Risk Prediction</h1>
-    <p class="field">Predictive modeling and statistical evaluation, Indiana University</p>
-    <p class="lede">Building a 200,000-participant analytical cohort in SQL and a PCA and XGBoost pipeline on top of it, evaluated for calibration and fairness rather than headline accuracy alone.</p>
+    <p class="field">Cohort engineering and predictive modeling on clinical data</p>
+    <p class="lede">Building a 200,000-participant analytical cohort in SQL from demographics, medications, comorbidities and clinical features, then a PCA and XGBoost pipeline evaluated for calibration and fairness rather than headline accuracy alone.</p>
   </div>
 
   <div class="casemeta">
-        <div><b>Role</b><span>Data scientist, predictive analytics</span></div>
-        <div><b>Organization</b><span>Indiana University</span></div>
-        <div><b>Timeline</b><span>June 2025 - May 2026</span></div>
-        <div><b>Headline</b><span>0.802 AUROC</span></div>
+    <div><b>Role</b><span>Data scientist, predictive analytics</span></div>
+    <div><b>Organization</b><span>Indiana University</span></div>
+    <div><b>Timeline</b><span>June 2025 to May 2026</span></div>
+    <div><b>Result</b><span>0.802 AUROC, 0.379 PR-AUC</span></div>
   </div>
 
   <section>
-    <h2>The problem</h2>
-    <p>Predict an outcome across a large population from many overlapping attributes, and do it in a way somebody would be willing to act on. With a rare outcome, a model can look excellent on accuracy while being useless in practice, so the work had to be <strong>trustworthy and explainable</strong>, not just performant.</p>
+    <h2>Problem</h2>
+    <p>Risk stratification across a large clinical population is only useful if somebody will act on it. That sets a higher bar than predictive accuracy: a score has to be reliable enough to trust, stable enough to hold across different kinds of patient, and explainable enough that a research team can say why it moved.</p>
+
+    <h3>Target condition</h3>
+    <p>A model that discriminates meaningfully beyond a simple baseline, holds up under statistical testing and ablation, behaves consistently across subgroups, and produces findings a research audience can interpret and challenge.</p>
   </section>
 
   <section>
-    <h2>The data</h2>
+    <h2>Root cause</h2>
+    <p>Three things make this class of problem fail, and none of them is the choice of algorithm.</p>
+
+    <h3>Cause 1 — the data does not arrive at the grain the model needs</h3>
+    <p>Clinical data lands at many different grains. Demographics are one row per participant, but medications are one row per prescription, comorbidities one row per diagnosis, and clinical features one row per measurement. A model needs exactly one row per participant. Collapsing many-to-one without losing signal or double-counting history is the bulk of the work, and it happens in SQL long before any modeling starts.</p>
+
+    <h3>Cause 2 — clinical features are high-dimensional and heavily correlated</h3>
+    <p>Comorbidities and medications co-occur by construction: conditions travel together, and drugs map onto the conditions they treat. Feeding hundreds of correlated indicators straight into a model spreads the same underlying signal across many weak, unstable columns.</p>
+
+    <h3>Cause 3 — headline metrics flatter a model on an imbalanced outcome</h3>
+    <p>When the positive class is uncommon, accuracy is close to meaningless and AUROC remains optimistic, because it rewards ranking performance across a majority that is easy to rank. Reporting either number alone would overstate how useful the model is in practice. This is a measurement failure, and it has to be designed out before results are produced rather than caveated afterwards.</p>
+  </section>
+
+  <section>
+    <h2>Countermeasure</h2>
+
+    <h3>1. Build the cohort deliberately, in SQL</h3>
+    <p>A <strong>200,000+ participant</strong> analytical cohort assembled from four domains — demographics, medications, comorbidities and clinical features — aggregated to one row per participant and joined into a single modeling table. The cohort definition is the asset here: it is what makes the result reproducible and what any later question about the model ultimately traces back to.</p>
+
+    <h3>2. Reduce dimensionality before modeling</h3>
+    <p><strong>PCA</strong> applied to compress the correlated clinical feature space, so the model works from components carrying the shared variance rather than from hundreds of overlapping indicators competing to explain the same thing.</p>
+
+    <h3>3. Model and validate</h3>
+    <p><strong>XGBoost</strong> under <strong>5-fold cross-validation</strong>. Gradient boosting suits this data: mixed feature types, nonlinear relationships, and interactions between conditions and medications that a linear model would need specified by hand.</p>
+
+    <h3>4. Evaluate for trust, not just performance</h3>
     <ul>
-      <li><strong>200,000+ participants</strong>, assembled in <strong>SQL</strong>.</li>
-      <li>Demographics, medications, comorbidities and clinical features integrated into a single analytical table.</li>
+      <li><strong>PR-AUC reported alongside AUROC</strong>, because it reflects performance on the positive class specifically and does not get carried by an easy majority.</li>
+      <li><strong>Calibration</strong> checked, so predicted probabilities mean what they claim. A well-ranked but poorly calibrated score cannot be used for thresholds.</li>
+      <li><strong>Ablation studies</strong>, to establish which feature groups genuinely earn their place rather than assuming all four domains contributed.</li>
+      <li><strong>Subgroup analysis</strong>, to check the model behaves consistently across different kinds of participant instead of averaging over a group it serves badly.</li>
+      <li><strong>Statistical testing</strong>, to confirm observed differences were real rather than fold-to-fold variation.</li>
     </ul>
   </section>
 
   <section>
-    <h2>Approach</h2>
-    <ol>
-      <li><strong>Cohort construction.</strong> Wrote the SQL defining the cohort and joining every feature source into one table.</li>
-      <li><strong>Dimensionality reduction.</strong> Used <strong>PCA</strong> to compress heavily correlated features.</li>
-      <li><strong>Modeling.</strong> Trained <strong>XGBoost</strong> under <strong>5-fold cross-validation</strong>.</li>
-      <li><strong>Evaluation.</strong> Led with PR-AUC rather than AUROC, since the positive class is rare and AUROC flatters a model in that setting. Checked <strong>calibration</strong>, ran <strong>ablation studies</strong> and <strong>subgroup analysis</strong>, and used statistical testing to confirm differences were real.</li>
-      <li><strong>Communication.</strong> Turned the evaluation into findings and recommendations the research team could act on.</li>
-    </ol>
-  </section>
-
-  <section>
-    <h2>Results</h2>
+    <h2>Result</h2>
     <div class="tablewrap">
       <table class="rtable">
         <tr><th>Measure</th><th>Result</th></tr>
         <tr><td>AUROC</td><td>0.802</td></tr>
         <tr><td>PR-AUC</td><td>0.379</td></tr>
         <tr><td>Validation</td><td>5-fold cross-validation</td></tr>
-        <tr><td>Cohort size</td><td>200,000+</td></tr>
+        <tr><td>Cohort size</td><td>200,000+ participants</td></tr>
       </table>
     </div>
+    <p>The gap between the two figures is the point. <strong>0.802 AUROC</strong> describes how well the model ranks participants overall; <strong>0.379 PR-AUC</strong> describes how it performs where the decisions actually get made, on the positive class. Reporting the first without the second would have made the model look considerably stronger than it is, and the evaluation was designed to prevent exactly that.</p>
+    <p>Ablation and subgroup results, together with the statistical testing, were carried into the findings so the research team received drivers and caveats rather than a single score.</p>
   </section>
 
   <section>
-    <h2>What I took from it</h2>
+    <h2>Follow-up</h2>
     <ul>
-      <li>PR-AUC is the honest metric when positives are rare. Reporting AUROC alone would have made this model look considerably better than it is.</li>
-      <li>Ablation studies showed which feature groups genuinely earn their place, and several did not.</li>
+      <li>Validate against an external cohort, or one drawn from a later time period, to test whether performance is a property of the model or of this population.</li>
+      <li>Add SHAP explanations at the level of individual predictions, recovering the per-feature interpretability that PCA trades away.</li>
+      <li>Revisit the decision threshold explicitly against the operating cost of a false positive versus a missed case, which is a different question from the one AUROC answers.</li>
     </ul>
   </section>
-
-  <section>
-    <h2>What I would do next</h2>
-    <ul>
-      <li>Validate against an external cohort, or one drawn from a later time period.</li>
-      <li>Add SHAP explanations at the level of individual predictions, not just global importance.</li>
-    </ul>
-  </section>
-
 
   <div class="nextprev">
-      <a href="energy-demand-forecasting.html">Next: Energy Demand Forecasting</a>
-      <a href="index.html">All work</a>
+    <a href="energy-demand-forecasting.html">Next: PSCO Electricity Demand Forecasting</a>
+    <a href="index.html">All work</a>
   </div>
 </div>
 
