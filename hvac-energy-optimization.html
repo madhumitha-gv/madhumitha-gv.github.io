@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>HVAC Energy Optimization</title>
-<meta name="description" content="Cutting HVAC energy cost across a retail network without losing thermal comfort.">
+<meta name="description" content="Weather-aware HVAC energy analytics across ~650 retail stores: problem, root cause, countermeasure and result. 59% lower MAE and a 5% weather-normalized pilot reduction.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
@@ -21,76 +21,149 @@
 <div class="wrap case">
   <div class="casehead">
     <h1>HVAC Energy Optimization</h1>
-    <p class="field">Regression and daily scoring, AutoZone client engagement</p>
-    <p class="lede">Modeling HVAC energy use against weather and operating conditions across a retail network, with daily scoring so the recommendations stayed current as conditions changed.</p>
+    <p class="field">Weather-aware predictive analytics across a 650-store retail portfolio</p>
+    <p class="lede">Turning a facilities-energy goal into a system that predicts expected HVAC consumption from weather and operating conditions, flags stores using more than they should, and quantifies savings that can be separated from the weather.</p>
   </div>
 
   <div class="casemeta">
-        <div><b>Role</b><span>Data Science Intern, Predictive Analytics</span></div>
-        <div><b>Client</b><span>AutoZone engagement</span></div>
-        <div><b>Timeline</b><span>June 2025 - December 2025</span></div>
-        <div><b>Headline</b><span>$1.8M annual savings</span></div>
+    <div><b>Role</b><span>Data Science Intern, Predictive Analytics</span></div>
+    <div><b>Client</b><span>AutoZone engagement, remote</span></div>
+    <div><b>Timeline</b><span>June 2025 to December 2025</span></div>
+    <div><b>Result</b><span>59% lower MAE, ~5% weather-normalized pilot reduction</span></div>
   </div>
 
   <section>
-    <h2>The problem</h2>
-    <p>HVAC is one of the largest energy costs across a retail store network. The business wanted that cost down, but not at the price of making stores uncomfortable for customers and staff, which is the easy way to save energy and the fastest way to have the savings reversed.</p>
-    <p>That framed the work: understand how HVAC energy responds to weather and operating conditions, then find where settings could change <strong>without</strong> crossing a comfort threshold.</p>
+    <h2>Problem</h2>
+    <p>Each of roughly <strong>650 retail stores</strong> is also a commercial building with HVAC equipment running year-round across Midwest, Southern and Northeastern climate zones. HVAC is one of the largest <em>controllable</em> components of facility energy, and at that fleet size a small percentage improvement is worth real money.</p>
+
+    <h3>Current state</h3>
+    <p>Control was rule-based. HVAC followed fixed BMS schedules and predefined setpoints, which are predictable but do not adapt to weather, solar load, regional humidity or local operating practice. A schedule that is sensible on one day causes unnecessary pre-cooling, extended compressor runtime or over-conditioning on another.</p>
+
+    <h3>Target condition</h3>
+    <p>Two requirements that pull against each other: <strong>reduce HVAC energy and cost</strong> while <strong>preserving retail thermal comfort</strong>. This was never a pure cost-minimisation problem. A recommendation that saves energy by letting a store get uncomfortable is a failed recommendation.</p>
+    <p>Which reframed the business question as: <strong>which stores are consuming more HVAC energy than expected given their weather, building and operating conditions, and where can schedules or setpoints be adjusted safely?</strong></p>
   </section>
 
   <section>
-    <h2>The data</h2>
-    <ul>
-      <li><strong>HVAC telemetry</strong> from store systems.</li>
-      <li><strong>Weather</strong> observations and store <strong>operating conditions</strong>.</li>
-      <li>Queried with <strong>SQL</strong>, modeled in <strong>Python</strong>.</li>
-    </ul>
+    <h2>Root cause</h2>
+
+    <h3>Cause 1 — static schedules cannot respond to conditions</h3>
+    <p>A fixed schedule encodes an assumption about a typical day. Weather-normalized analysis showed systems beginning to condition too early or staying active too long relative to actual store and weather conditions, producing runtime nobody chose and nobody saw.</p>
+
+    <h3>Cause 2 — you cannot tell an inefficient store from a hot one</h3>
+    <p>Ranking facilities by raw kWh finds the biggest stores in the warmest climates, which is not the same as finding waste. Without a weather-normalized expectation for each store, there is no way to separate a facility working hard under genuine load from one operating badly under mild conditions.</p>
+
+    <h3>Cause 3 — dry-bulb temperature misses half the cooling load</h3>
+    <p>This one surfaced as a model failure. An early version leaned on outdoor temperature as the primary environmental driver and performed acceptably at portfolio level, but regional error analysis showed residuals staying <em>consistently positive</em> in humid Southern stores during hot periods: the model was systematically underpredicting there.</p>
+    <p>Temperature captures sensible heat but not the latent load of removing moisture. Two days at the same air temperature can demand very different HVAC energy. The broader lesson was that <strong>an acceptable global error metric can conceal systematic regional bias</strong>, so error has to be segmented by operating context rather than read as one number.</p>
+
+    <h3>Cause 4 — before-and-after cannot prove savings</h3>
+    <p>Comparing energy before an intervention against energy after it says nothing on its own, because HVAC demand is driven by weather. A cooler post-intervention year shows a reduction whether or not anything improved. Any savings claim needed a counterfactual, not a subtraction.</p>
   </section>
 
   <section>
-    <h2>Approach</h2>
-    <ol>
-      <li><strong>Frame the objective.</strong> Translated a business efficiency target into something measurable a model could optimize against.</li>
-      <li><strong>Repeatable features.</strong> Built a feature-generation process that held up across changing environmental and operating conditions, rather than a one-off extract.</li>
-      <li><strong>Modeling.</strong> Regression models of energy use under varying conditions.</li>
-      <li><strong>Daily scoring.</strong> Set up scoring workflows that ran daily, so recommendations reflected current conditions instead of a snapshot taken months earlier.</li>
-      <li><strong>Recommendations.</strong> Converted model output into operating recommendations, each checked against thermal-comfort limits before it was proposed.</li>
-    </ol>
-  </section>
+    <h2>Countermeasure</h2>
 
-  <section>
-    <h2>Results</h2>
+    <h3>1. Build one analytical table that can carry the question</h3>
+    <p>Roughly <strong>36 months</strong> of history across three sources, reconciled in SQL to <strong>one row per store per hour</strong>:</p>
     <div class="tablewrap">
       <table class="rtable">
-        <tr><th>Measure</th><th>Result</th></tr>
-        <tr><td>Annual savings supported</td><td>$1.8M</td></tr>
-        <tr><td>Energy cost reduction</td><td>5%</td></tr>
-        <tr><td>CO₂ reduction</td><td>8.34M lbs</td></tr>
-        <tr><td>Thermal comfort</td><td>Maintained</td></tr>
+        <tr><th>Source</th><th>Grain</th><th>Volume</th></tr>
+        <tr><td>HVAC / BMS telemetry</td><td>15-minute sensor records</td><td>~17M</td></tr>
+        <tr><td>NOAA weather</td><td>station-hour</td><td>~5.7M</td></tr>
+        <tr><td>Store operations / master</td><td>one record per store</td><td>~650</td></tr>
       </table>
     </div>
+    <p>The store-hour grain was a deliberate choice: it damps individual sensor noise while staying granular enough to hold operating schedules, weather transitions and abnormal consumption. The modeling target was <strong>hourly HVAC energy in kWh</strong>. Compressor and fan runtime were kept as diagnostic inputs rather than targets, because runtime explains consumption but is not the thing being optimised.</p>
+    <p>Stores were matched to weather stations by <strong>Haversine distance</strong> from ZIP centroid to station coordinates. When a primary station had a significant missing interval, the pipeline failed over to the next qualifying station within about 35 miles. Weather is a fundamental input here, and silently carrying stale or incomplete records would have produced misleading expected-energy baselines.</p>
+
+    <h3>2. Separate bad data from genuine anomalies</h3>
+    <p>This distinction mattered more than usual, because the entire system is an anomaly detector. <strong>A broken sensor must not be read as inefficiency.</strong></p>
+    <ul>
+      <li>Short gaps under about two hours in slowly varying state variables — indoor temperature, thermostat state — were eligible for bounded interpolation. Longer intervals were flagged incomplete.</li>
+      <li><strong>Missing energy and runtime were never reconstructed.</strong> These are the primary behavioural measurements; fabricating them would mean inventing the evidence.</li>
+      <li>Impossible values such as negative energy were treated as data-quality failures and removed. A physically valid store consuming far more than expected in ordinary weather stayed in the workflow, because that is the signal.</li>
+    </ul>
+
+    <h3>3. Give the model the physics the baseline was missing</h3>
+    <ul>
+      <li><strong>Weather:</strong> dry-bulb temperature, relative humidity, dew point, heating and cooling degree days, and a cloud-cover solar proxy.</li>
+      <li><strong>Thermal differential:</strong> the gap between outdoor and indoor temperature, whose size and direction indicate the thermal work required to hold the indoor environment.</li>
+      <li><strong>Solar load index</strong> derived from store latitude, day of year, hour and cloud fraction. Not building-physics simulation, but a reasonable indicator of relative solar heat gain that dry-bulb temperature alone cannot supply.</li>
+      <li><strong>Temporal:</strong> hour, day of week, weekend, holiday, season, operating duration, occupied versus unoccupied.</li>
+      <li><strong>Store and climate metadata:</strong> square footage, climate zone, region, scheduled opening and closing times.</li>
+      <li><strong>Lag and rolling history</strong> computed only from observations available before the prediction timestamp.</li>
+    </ul>
+
+    <h3>4. Validate chronologically, compare honestly</h3>
+    <p>Adjacent hours from the same store are strongly correlated, so a random split places near-identical operating states in both training and validation and overstates real future performance. The 36 months were partitioned in order: <strong>24 months training, 6 months validation and tuning, 6 months untouched holdout</strong>. Hyperparameters were searched randomly with <code>TimeSeriesSplit</code>, never shuffled folds.</p>
+    <p>A single <strong>global portfolio model</strong> was preferred over 650 per-store models. Separate models capture local behaviour but are statistically weak for stores with sparse history and heavy to maintain; a global model shares strength across the fleet and uses metadata to learn the different regimes. The tradeoff is that store-level residual normalisation then becomes essential.</p>
+
+    <h3>5. Turn predictions into something facilities can act on</h3>
+    <p>An <strong>Airflow</strong> DAG ran nightly: data-availability checks, telemetry and weather ingestion, data-quality validation, feature generation, loading the versioned XGBoost artifact, scoring, and curated writes, with alerts on failure. The operating rule was that <strong>no score is preferable to a precise-looking score built on invalid data</strong>.</p>
+    <p>Two scoring modes were kept deliberately separate, so an operational forecast was never confused with savings verification:</p>
+    <ul>
+      <li><strong>Prospective:</strong> next-day expected energy from weather forecasts, scheduled hours and permitted lag history.</li>
+      <li><strong>Retrospective:</strong> actual minus expected under observed conditions, producing a residual.</li>
+    </ul>
+    <p>A single positive residual means nothing, since every model has error. Residuals were standardised against <strong>each store's own historical residual distribution</strong>, and the monitoring layer looked for persistent elevation above roughly <strong>2 standard deviations across a rolling 72-hour window</strong>. That way a 10 kWh miss is judged against what is normal for that facility rather than against the portfolio.</p>
+
+    <h3>6. Hold comfort as a hard constraint</h3>
+    <p>Comfort was not in the loss function. It sat downstream as a business guardrail: <strong>70&#8457; to 74&#8457; during occupied hours</strong>. A recommendation qualified only if it held that band, and indoor sensor readings were monitored after changes so savings could not be achieved by quietly degrading the environment.</p>
+
+    <h3>7. Measure savings against a counterfactual, not against last year</h3>
+    <p>The question asked was: <em>what would this store have consumed in the post-intervention period, under the same observed weather, if the operating policy had never changed?</em></p>
+    <p>One subtlety decided the credibility of the whole estimate. The operational model may use rich telemetry such as runtime, because its job is accurate prediction. The <strong>counterfactual may not</strong>: if the intervention reduced compressor runtime, feeding post-intervention runtime into the no-intervention baseline contaminates it with the treatment and shrinks the measured saving toward zero. The counterfactual therefore used exogenous and baseline-state inputs only — observed weather, humidity, calendar, operating hours, store characteristics and the pre-intervention operating policy.</p>
   </section>
 
   <section>
-    <h2>What I took from it</h2>
-    <ul>
-      <li>Savings only materialise from recommendations people are willing to adopt. Holding comfort as a hard constraint is what made these adoptable.</li>
-      <li>Daily scoring was not a nicety. Weather and store operations change constantly, and a static recommendation goes stale within weeks.</li>
-    </ul>
+    <h2>Result</h2>
+
+    <h3>Model accuracy on the untouched holdout</h3>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Model</th><th>MAE</th><th>RMSE</th></tr>
+        <tr><td>Temperature / CDD linear baseline</td><td>14.2 kWh</td><td>18.6 kWh</td></tr>
+        <tr><td>Ridge regression</td><td>9.8 kWh</td><td>12.4 kWh</td></tr>
+        <tr><td>Random Forest</td><td>6.5 kWh</td><td>8.3 kWh</td></tr>
+        <tr><td>XGBoost (final)</td><td>5.8 kWh</td><td>7.4 kWh</td></tr>
+      </table>
+    </div>
+    <p><strong>XGBoost reduced out-of-time MAE by about 59%</strong> against the conventional temperature and cooling-degree-day baseline. Both MAE and RMSE were tracked, because MAE gives the intuitive average error in kWh while RMSE exposes whether occasional large misses were getting worse.</p>
+
+    <h3>Operating impact</h3>
+    <p>A pilot cohort of roughly <strong>200 stores</strong> was evaluated over a full <strong>12-month</strong> post-intervention period against the weather-normalized counterfactual, which captured seasonal variation rather than resting on a favourable summer window. The result was an approximately <strong>5% weather-normalized HVAC energy reduction while holding the comfort guardrail</strong>.</p>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Measure</th><th>Value</th></tr>
+        <tr><td>Pilot reduction, weather-normalized</td><td>~5%</td></tr>
+        <tr><td>Annual portfolio HVAC spend</td><td>~$36M</td></tr>
+        <tr><td>Projected annual savings opportunity</td><td>~$1.8M</td></tr>
+        <tr><td>Energy opportunity</td><td>~16.6M kWh</td></tr>
+        <tr><td>Portfolio-weighted emission factor</td><td>~0.503 lb CO&#8322;/kWh</td></tr>
+        <tr><td>CO&#8322; reduction opportunity</td><td>~8.34M lb</td></tr>
+      </table>
+    </div>
+    <p>Carbon was computed with EPA eGRID subregion emission factors applied by operating footprint and then aggregated; 0.503 lb/kWh is the portfolio-weighted average, not a national constant.</p>
+
+    <h3>What these numbers do and do not claim</h3>
+    <p>The 5% is a measured, weather-normalized pilot result. The <strong>$1.8M and 8.34M lb are projected portfolio-level annual opportunity</strong> extrapolated from that pilot against the $36M baseline — not audited realised cash. The evaluation is observational rather than randomised, so operational changes coinciding with the HVAC work could still confound it. The system also never actuated equipment: it produced a decision-support layer, and facilities and HVAC engineering retained control of every physical change.</p>
   </section>
 
   <section>
-    <h2>What I would do next</h2>
+    <h2>Follow-up</h2>
     <ul>
-      <li>Extend the models into anomaly detection, to flag failing equipment before it shows up as a cost.</li>
-      <li>Run recommendations as an A/B test across store groups, to measure causal impact rather than infer it.</li>
+      <li><strong>Stronger causal evidence.</strong> Matched control facilities or difference-in-differences where the rollout design allows, to move the savings claim beyond weather normalisation.</li>
+      <li><strong>Richer facility data:</strong> equipment age and capacity, envelope and insulation characteristics, retrofit history, and better occupancy estimates than store schedules.</li>
+      <li><strong>Drift monitoring</strong> on residual distributions, climate-specific error, feature distributions and missing-sensor rates, so regional bias of the kind found in the humid South is caught automatically rather than by hand.</li>
+      <li><strong>Constrained optimisation.</strong> Once the prediction layer is trusted enough, search schedules and setpoints directly against comfort and equipment constraints, instead of relying only on exception-driven review.</li>
     </ul>
+    <p>One limitation is worth keeping in view regardless: accuracy degrades outside the training distribution, so an extreme heat event beyond historical range calls for monitoring and alerting on distribution shift rather than confident automated recommendations.</p>
   </section>
-
 
   <div class="nextprev">
-      <a href="large-cohort-risk-prediction.html">Next: Large-Cohort Risk Prediction</a>
-      <a href="index.html">All work</a>
+    <a href="large-cohort-risk-prediction.html">Next: Large-Cohort Risk Prediction</a>
+    <a href="index.html">All work</a>
   </div>
 </div>
 
