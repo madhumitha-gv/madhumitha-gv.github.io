@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Multi-Agent Travel Discovery Planner</title>
+<meta name="description" content="Six LangGraph agents that infer a travel persona, rank 500 cities and gate on live weather.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Multi-Agent Travel Discovery Planner</h1>
+    <p class="field">A LangGraph agent graph with a real conditional branch</p>
+    <p class="lede">Most travel planners ask you to pick a destination first, which is the hardest part when you only know the kind of trip you want. This one starts from who you are: six agents infer a persona from free text, rank 500 cities against it, check live weather, and build the plan for whichever city actually fits.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Sole developer</span></div>
+    <div><b>Agents</b><span>6, orchestrated in LangGraph</span></div>
+    <div><b>Scale</b><span>500 cities checked in ~1.6s</span></div>
+    <div><b>Deployed</b><span>Azure Container Apps</span></div>
+  </div>
+
+  <section>
+    <h2>The idea</h2>
+    <p>You often know the trip you want — beaches, food, nature, nightlife, history, something relaxing or something adventurous — without knowing where to go. Here your preferences are the input, your persona becomes the search signal, and the destination falls out of the ranking.</p>
+  </section>
+
+  <section>
+    <h2>The agents</h2>
+    <ul>
+      <li><strong>Persona:</strong> DeBERTa-v3 zero-shot classification across 12 travel labels, keeping the top three. No training data, no prompt engineering, no per-query API cost.</li>
+      <li><strong>Destination:</strong> MiniLM embeddings rank 500 cities by cosine similarity against the persona.</li>
+      <li><strong>Weather:</strong> live apparent temperature from Open-Meteo, bucketed from freezing to very hot, accepting only chilly or warm.</li>
+      <li><strong>Itinerary, Culture and Packing:</strong> three Mistral-7B-Instruct agents sharing a single client, so the model and endpoint are defined in exactly one place.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Why LangGraph rather than a function chain</h2>
+    <p>The weather check is not a linear step. It is a gate with three outcomes that loops back on itself while advancing a cursor down the shortlist, rejecting cities until one passes or the list runs out. LangGraph makes that a first-class conditional edge with typed state, so each node stays a testable function and the topology can be rendered live in the UI. A hand-rolled loop would work but would not be inspectable.</p>
+    <p>When every candidate fails, the app does not dead-end. It hands the decision back to the user, who can overrule the gate or search the whole catalogue.</p>
+  </section>
+
+  <section>
+    <h2>Engineering decisions</h2>
+    <ul>
+      <li><strong>Local embeddings over an embeddings API:</strong> MiniLM runs on CPU with no key, no rate limit and no per-call cost. The 500 city vectors are computed once and cached in-process, measured at <strong>5.7s cold and 1.0s warm</strong>.</li>
+      <li><strong>Open-Meteo over a commercial weather API:</strong> free, keyless and able to accept many coordinates per request. That property is what makes whole-catalogue filtering viable — 500 cities in <strong>5 requests, about 1.6s</strong>, against 25 cities in 25 sequential calls at roughly 10.6s.</li>
+      <li><strong>Remote Mistral over a local 7B:</strong> running it locally would mean ~15GB of weights and slow CPU inference. Hosted generation keeps the image around 1GB and the container inside a 2GB budget, while the two small models that benefit from being local stay local.</li>
+      <li><strong>Azure Container Apps:</strong> the app holds 1.21 GiB resident with both models loaded and peaks at 1.31 GiB. That measurement ruled out Render free (512MB), Azure App Service F1 (1GB) and AWS t3.micro (1GB). Container Apps allows 2GB, scales to zero and renews its free grant monthly.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Honest limitations</h2>
+    <p><strong>The city dataset barely discriminates.</strong> The 500 cities share only <strong>12 distinct feature strings</strong>: 241 cities share one, 189 share another. So 86% of the catalogue collapses into two descriptions, similarity scores tie constantly, and "best match" is often decided by file order rather than meaning. The per-country cap keeps the shortlist looking varied, but it masks the problem rather than fixing it. Enriching per-city descriptions is the highest-value improvement available.</p>
+    <p><strong>The weather gate is strict.</strong> Only chilly and warm pass, so anything outside roughly 15–28&#8451; is rejected. In summer that fails most interesting destinations: three Mediterranean cities in September were all rejected at 30–32&#8451;. Human-in-the-loop exists precisely because of this, and widening the band is a product decision rather than a bug fix.</p>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://github.com/madhumitha-gv/Multi-Agent-Travel-Discovery-Planner" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="https://travel-planner.gentlemushroom-48179c71.centralus.azurecontainerapps.io" target="_blank" rel="noopener">Live demo</a>
+    <a href="document-processing-pipeline.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

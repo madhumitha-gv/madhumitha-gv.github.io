@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Workplace Mental Health Risk Prediction</title>
+<meta name="description" content="Two classifiers and three composite indices on tech-industry survey data, served with SHAP explanations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Workplace Mental Health Risk Prediction</h1>
+    <p class="field">Explainable risk modeling on 1,467 survey responses</p>
+    <p class="lede">Employers catch mental health risk late, through questionnaires and interviews that miss early signals. This project models an anonymous tech-industry survey into two predictions and three interpretable workplace indices, served through an app and an API where SHAP explains every individual score.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Sole developer</span></div>
+    <div><b>Data</b><span>1,467 responses, 63 features</span></div>
+    <div><b>Models</b><span>XGBoost, Gradient Boosting</span></div>
+    <div><b>Served via</b><span>Streamlit and FastAPI</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Mental health disorders are a growing workplace concern, but traditional detection — static questionnaires and clinical interviews — is slow and often misses early warning signs. The project set out to predict risk from survey data <em>and</em> to make the prediction explainable enough that HR and mental-health professionals could act on it rather than simply receive a score.</p>
+  </section>
+
+  <section>
+    <h2>Preparing messy survey data</h2>
+    <p>Survey responses are not clean categorical data. Answers like "I don't know", "N/A" and "Not sure" carry meaning that is lost if treated as missing.</p>
+    <ul>
+      <li>Ambiguous responses were mapped onto explicit ordinal values rather than discarded.</li>
+      <li>Genuinely ordinal variables were encoded in order, so "Very easy" to "Never" keeps its ranking instead of becoming arbitrary labels.</li>
+      <li>Remaining categoricals were label-encoded and residual nulls imputed with column medians.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Three composite indices</h2>
+    <p>Rather than feeding 63 raw columns into a model, three interpretable indices were engineered, each normalised to a 0–1 range:</p>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Index</th><th>What it measures</th></tr>
+        <tr><td>Mental Health Support</td><td>Employer benefits, care options, wellness programs, leave ease, formal communication</td></tr>
+        <tr><td>Workplace Stigma</td><td>Fear of consequences, observed discrimination, coworker and supervisor discomfort, career impact</td></tr>
+        <tr><td>Organizational Openness</td><td>Parity with physical health, anonymity protection, medical coverage, interview willingness</td></tr>
+      </table>
+    </div>
+    <p>These give a non-technical audience a high-level read on workplace culture that individual survey columns cannot.</p>
+  </section>
+
+  <section>
+    <h2>Models and results</h2>
+    <p>Two separate models, each trained on the ten features most correlated with its own target:</p>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Model</th><th>Algorithm</th><th>Accuracy</th><th>F1</th></tr>
+        <tr><td>Current mental health disorder</td><td>XGBoost</td><td>~82%</td><td>~0.79</td></tr>
+        <tr><td>Likelihood of seeking treatment</td><td>Gradient Boosting</td><td>~85%</td><td>~0.83</td></tr>
+      </table>
+    </div>
+    <p>Each outputs a risk level, a probability, and SHAP-based feature importance. <strong>SHAP waterfall plots show which features drove an individual prediction</strong>, which is what turns a risk score into something a professional can question rather than simply trust.</p>
+  </section>
+
+  <section>
+    <h2>Delivered two ways</h2>
+    <ul>
+      <li><strong>Streamlit app:</strong> a 15-question survey, real-time colour-coded risk gauges, a SHAP explanation tab, prioritised recommendations and an analytics tab with benchmarks.</li>
+      <li><strong>FastAPI backend:</strong> <code>/predict</code> for a single employee, <code>/batch-predict</code> with summary statistics, plus <code>/health</code>, <code>/metrics</code> and <code>/train</code> for retraining from an uploaded CSV, with auto-generated docs.</li>
+    </ul>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://github.com/madhumitha-gv/Workplace-Mental-Health-Risk-Prediction" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="ecommerce-big-data.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

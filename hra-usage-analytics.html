@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Human Reference Atlas Usage Analytics</title>
+<meta name="description" content="Turning 250,853 Google Analytics events into usability findings for the Human Reference Atlas interfaces.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Human Reference Atlas Usage Analytics</h1>
+    <p class="field">Behavioural analytics on 250,853 web events</p>
+    <p class="lede">The HRA dashboard reported traffic volumes but not how researchers actually move through the registration and exploration interfaces. This project turned raw Google Analytics events into navigation paths, interaction hotspots and a concrete discoverability gap.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Analyst, visualization team</span></div>
+    <div><b>Data</b><span>250,853 GA events via BigQuery</span></div>
+    <div><b>Tools</b><span>Python, Pandas, BigQuery, PM4Py, Plotly</span></div>
+    <div><b>Client</b><span>HRA team, Indiana University</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>The Human Reference Atlas exposes several user interfaces: a Registration UI, an Exploration UI and the ASCT+B Reporter. The existing HRA dashboard provided traffic analytics but little insight into user <em>behaviour</em>: interaction patterns, event sequences and spatial usage trends were not visible.</p>
+    <p>Developers and UX designers needed to know which controls get used, which get ignored, and what paths users actually take, so that interface decisions could be driven by evidence instead of assumption.</p>
+  </section>
+
+  <section>
+    <h2>The data</h2>
+    <ul>
+      <li><strong>250,853 event records</strong> exported from Google Analytics through BigQuery, covering multiple HRA interfaces through early 2025.</li>
+      <li>Nine attributes per event, including pseudonymous user id, hostname, page location, event timestamp, event name, category and label.</li>
+      <li>Core tracking fields were fully populated. Descriptive fields were patchier: hostname 99.3% complete, event category 83.2%, event label 82.3%.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Approach</h2>
+    <ol>
+      <li><strong>Cleaning.</strong> Removed <code>page_view</code> and generic webpage events, which carried no behavioural signal, cutting roughly 250,000 rows to the ~50,000 that described real interaction. Missing categorical values were filled with explicit placeholders rather than dropped, preserving dataset structure.</li>
+      <li><strong>Timestamps.</strong> Unix microsecond fields converted to UTC, with <code>user_first_touch_timestamp</code> backfilled from <code>event_timestamp</code> where the two overlapped.</li>
+      <li><strong>Label cleanup.</strong> Event labels arrived cluttered with long IRI prefixes and embedded metadata. Regular expressions stripped the prefixes and extracted the embedded attributes into their own fields, which stopped a large share of events collapsing into an uninformative "Other" bucket.</li>
+      <li><strong>Analysis across three dimensions:</strong> time, space and navigation flow.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What the visualizations showed</h2>
+    <ul>
+      <li><strong>Stacked area chart</strong> of weekly event volume showed two clear activity peaks, in late December 2024 and late January 2025, driven by placement, node selection and session starts.</li>
+      <li><strong>Heatmap</strong> of average daily clicks by hour revealed node selection concentrated in afternoon and late evening, while interface controls like opening search ran steadily all day.</li>
+      <li><strong>Sankey diagram</strong>, built with PM4Py's heuristic miner, mapped event-to-event transitions and showed most journeys beginning at session start or first visit before moving into scrolling and node selection.</li>
+      <li><strong>Sunburst and treemap</strong> exposed the hierarchy of interactions, with placement and node selection dominating, and detail like specific anatomical placements emerging at lower levels.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The finding that mattered</h2>
+    <p>Specialised filters, such as those for sex and side, were used far less than the core placement and selection actions. That is a <strong>discoverability gap</strong> rather than a sign the features are unwanted, and it gave the UX team something specific to act on.</p>
+    <p>The activity peaks also pointed to concrete operational windows for system monitoring and feature rollouts, and the predictable early-session pattern validated the current onboarding flow as a baseline to measure future changes against.</p>
+  </section>
+
+  <section>
+    <h2>Challenges</h2>
+    <ul>
+      <li>Variable-depth paths with more than four levels, or single-node sequences, cluttered the treemap and truncated it unhelpfully. Path depth was capped at four and singleton paths filtered out and logged separately, keeping the view auditable.</li>
+      <li>Raw event paths overwhelmed the Sankey with low-value flows. A heuristic mapping collapsed trivial paths so meaningful transitions stayed legible.</li>
+    </ul>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://docs.google.com/document/d/1uz7vreOzreWLyboQrv101cdnDWT9Gq9s/edit" target="_blank" rel="noopener">View the full report</a>
+    <a href="rag-course-advisor.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

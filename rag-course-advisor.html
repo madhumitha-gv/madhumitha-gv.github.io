@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RAG Course Advisor Chatbot</title>
+<meta name="description" content="A hybrid BM25 and FAISS retrieval chatbot answering graduate course questions with citations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>RAG Course Advisor Chatbot</h1>
+    <p class="field">Hybrid retrieval over ten graduate program handbooks</p>
+    <p class="lede">Graduate students at IU Luddy were digging through ten separate program handbooks to answer one question. This chatbot fuses lexical and semantic retrieval so an exact course code and a vaguely worded question about electives both resolve, and answers with citations back to the source handbook.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Sole developer</span></div>
+    <div><b>Corpus</b><span>10 handbooks, 8 programs</span></div>
+    <div><b>Retrieval</b><span>BM25 + FAISS, reciprocal rank fusion</span></div>
+    <div><b>Stack</b><span>Python, Mistral, Streamlit</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Luddy publishes separate handbooks for Computer Science, Data Science (residential and online), HCI Design, Informatics, Information and Library Science, Intelligent Systems Engineering and Secure Computing. Answering one advising question often means knowing which of ten PDFs to open and where to look inside it.</p>
+  </section>
+
+  <section>
+    <h2>Why one retriever is not enough</h2>
+    <p>The query spectrum has two ends and neither retriever covers both.</p>
+    <ul>
+      <li><strong>BM25</strong> excels at exact matches. A student searching <code>DSCI-D590</code> needs lexical precision, and BM25 finds that exact code.</li>
+      <li><strong>FAISS</strong> captures meaning. A question about "machine learning electives" should also surface courses described as "predictive modeling" or "statistical learning", even when none of those words appear in the query.</li>
+    </ul>
+    <p><strong>Reciprocal rank fusion</strong> merges the two ranked lists using ranks rather than scores. That matters: BM25 scores and cosine similarities live on completely different scales, so fusing on raw scores requires a normalisation step that rank-based fusion avoids entirely.</p>
+  </section>
+
+  <section>
+    <h2>Build</h2>
+    <ul>
+      <li><strong>Extraction:</strong> <code>pdfplumber</code>, chosen because it preserves the tables and structured layouts that academic handbooks are full of.</li>
+      <li><strong>Chunking:</strong> section-based with a size fallback, so a handbook section stays semantically coherent rather than being cut at an arbitrary token count.</li>
+      <li><strong>Embeddings:</strong> <code>all-MiniLM-L6-v2</code>, 80MB and CPU-friendly, with strong short-text retrieval performance.</li>
+      <li><strong>Vector search:</strong> FAISS <code>IndexFlatIP</code>, selected for raw score access, which the fusion step needs.</li>
+      <li><strong>Generation:</strong> Mistral Small, for instruction-following on grounded, context-only question answering.</li>
+      <li><strong>Interface:</strong> Streamlit chat with expandable source citations, so every answer can be traced to the handbook it came from.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Why citations were non-negotiable</h2>
+    <p>An advising answer that is confidently wrong is worse than no answer, because a student may act on it when choosing courses. Grounding generation strictly in retrieved context and surfacing the source passage alongside every response makes the system checkable rather than merely fluent.</p>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://github.com/madhumitha-gv/RAG-Course-Advisor-Chatbot" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="travel-planner.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

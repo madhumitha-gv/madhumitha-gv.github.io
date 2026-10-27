@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Document Processing Pipeline</title>
+<meta name="description" content="A U-Net denoiser, TrOCR and a from-scratch adaptive Huffman encoder, built in 24 hours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>Document Processing Pipeline</h1>
+    <p class="field">Neural denoising, OCR and compression as communicating microservices</p>
+    <p class="lede">Built in 24 hours at IU Hackathon 2026. A noisy scanned document goes in; clean, losslessly compressed text comes out. A custom U-Net denoises the page, TrOCR reads it, and an adaptive Huffman encoder written from scratch compresses the result.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Team CodeNova, IU Hackathon 2026</span></div>
+    <div><b>Built in</b><span>24 hours</span></div>
+    <div><b>Denoising</b><span>41–44 dB PSNR</span></div>
+    <div><b>Compression</b><span>100% lossless</span></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Scanned documents come out noisy: blurred text, crumpled paper, stains, faded ink. Standard OCR fails on all of it. And even once you have clean text, you still need to store or transmit it efficiently.</p>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <p>Four communicating services rather than one script, so each stage could be developed and tested independently under time pressure:</p>
+    <ul>
+      <li><strong>React dashboard</strong> for upload, noise-profile selection, metrics and a Huffman tree viewer.</li>
+      <li><strong>FastAPI orchestrator</strong> handling JWT auth, a SQLite store, pipeline coordination and run history.</li>
+      <li><strong>Stage 1, OCR:</strong> a classical filter matched to the noise profile, the U-Net denoiser, OpenCV projection-based line segmentation, then TrOCR inference.</li>
+      <li><strong>Stage 2, compression:</strong> adaptive Huffman, returning compressed bytes, ratio, entropy, efficiency, the tree as JSON and the bit string.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The algorithms</h2>
+    <p><strong>U-Net denoiser.</strong> A custom encoder-decoder with skip connections, trained from scratch on the NoisyOffice dataset: 72 simulated noisy and clean document pairs spanning Gaussian, fold, crumple, wrinkle and pepper noise.</p>
+    <p><strong>CRNN.</strong> Built independently to demonstrate the architecture end to end: convolutional blocks collapsing height to one so width becomes the time axis, two bidirectional LSTM layers, then greedy CTC decoding, which removes the need for character segmentation. Trained on 200k synthesised eMNIST word sequences.</p>
+    <p><strong>Adaptive Huffman (FGK),</strong> implemented with no compression libraries. The frequency tree is built live, one symbol at a time, with an NYT sentinel node for unseen symbols and the sibling property maintained after every update, so encoder and decoder stay in sync with zero lookahead.</p>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <div class="tablewrap">
+      <table class="rtable">
+        <tr><th>Component</th><th>Metric</th><th>Result</th></tr>
+        <tr><td>U-Net, crumple noise</td><td>PSNR</td><td>43.88 dB</td></tr>
+        <tr><td>U-Net, fold noise</td><td>PSNR</td><td>43.15 dB</td></tr>
+        <tr><td>U-Net, wrinkle noise</td><td>PSNR</td><td>41.34 dB</td></tr>
+        <tr><td>U-Net, pepper noise</td><td>PSNR</td><td>44.45 dB</td></tr>
+        <tr><td>CRNN OCR</td><td>Character accuracy</td><td>90%</td></tr>
+        <tr><td>Huffman</td><td>Lossless recovery</td><td>100%</td></tr>
+      </table>
+    </div>
+    <p>Lossless recovery was verified on every run through one-click decompression, rather than assumed from the algorithm being correct in principle.</p>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://github.com/madhumitha-gv/OCR-engine" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="https://www.youtube.com/watch?v=3fcLQcOCGw4" target="_blank" rel="noopener">Watch the demo</a>
+    <a href="mental-health-risk-prediction.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>

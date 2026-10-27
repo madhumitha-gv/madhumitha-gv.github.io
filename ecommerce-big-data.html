@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>E-Commerce Big Data Analytics</title>
+<meta name="description" content="An AWS pipeline taking raw Amazon sales data through PySpark to SageMaker AutoML and Power BI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="backbar">
+  <div class="wrap">
+    <a class="home" href="index.html">Madhumitha</a>
+    <a class="back" href="index.html#built">Back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap case">
+  <div class="casehead">
+    <h1>E-Commerce Big Data Analytics</h1>
+    <p class="field">A cloud pipeline from raw files to model and dashboard</p>
+    <p class="lede">Raw Amazon sales files were too large to query directly or model against. This pipeline lands them in S3, transforms them with PySpark on EC2, and feeds the processed output to both automated model training and a revenue dashboard.</p>
+  </div>
+
+  <div class="casemeta">
+    <div><b>Role</b><span>Sole developer</span></div>
+    <div><b>Platform</b><span>AWS</span></div>
+    <div><b>Processing</b><span>PySpark on EC2</span></div>
+    <div><b>Outputs</b><span>SageMaker AutoML, Power BI</span></div>
+  </div>
+
+  <section>
+    <h2>The pipeline</h2>
+    <ol>
+      <li><strong>Raw data in S3.</strong> Source sales files land in object storage, cheap to hold and straightforward to version.</li>
+      <li><strong>Transformation on EC2 with PySpark.</strong> Cleaning and reshaping run distributed, so the job scales with data volume rather than being bounded by one machine's memory.</li>
+      <li><strong>Processed data back to S3</strong>, which becomes the single input both downstream consumers read from.</li>
+      <li><strong>Two consumers:</strong> SageMaker AutoML for model training, and a Power BI revenue dashboard for reporting.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Why it is shaped this way</h2>
+    <p>Writing the processed data back to S3, rather than passing it straight into training, means the modeling and reporting paths stay independent. The dashboard does not wait on a training run, and retraining does not require re-running the transformation. It also makes the processed layer reusable for any later consumer.</p>
+  </section>
+
+  <section>
+    <h2>Scope</h2>
+    <p>This is an infrastructure project rather than a modeling one. The work is the pipeline — the storage layout, the distributed transformation and the handoff to two different consumers. Model selection was delegated to SageMaker AutoML by design.</p>
+  </section>
+
+  <div class="nextprev">
+    <a href="https://github.com/madhumitha-gv/EcommerceBigDataAnalytics" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="hra-usage-analytics.html">Next project</a>
+    <a href="index.html">All work</a>
+  </div>
+</div>
+
+</body>
+</html>
