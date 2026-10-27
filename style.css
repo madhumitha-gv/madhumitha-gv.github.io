@@ -249,3 +249,10 @@ footer { padding-block: 2.5rem 3rem; color: var(--ink-2); font-size: 0.8125rem; 
   .aboutrow { grid-template-columns: 1fr; gap: 1.5rem; }
   .portrait { max-width: 10.5rem; }
 }
+
+/* Charts inside a case study. Matplotlib renders on white, so the frame stays white in both themes. */
+.fig { margin: 1.6rem 0 0; }
+.fig img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--rule); border-radius: 3px; padding: 0.6rem; }
+.case .fig figcaption { margin-top: 0.6rem; font-size: 0.8125rem; line-height: 1.55; color: var(--ink-2); max-width: 68ch; }
+.rtable th:not(:first-child), .rtable td:not(:first-child) { text-align: right; padding-right: 0; padding-left: 1.25rem; }
+.rtable { max-width: 38rem; }
