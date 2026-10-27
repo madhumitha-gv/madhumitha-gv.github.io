@@ -256,3 +256,7 @@ footer { padding-block: 2.5rem 3rem; color: var(--ink-2); font-size: 0.8125rem; 
 .case .fig figcaption { margin-top: 0.6rem; font-size: 0.8125rem; line-height: 1.55; color: var(--ink-2); max-width: 68ch; }
 .rtable th:not(:first-child), .rtable td:not(:first-child) { text-align: right; padding-right: 0; padding-left: 1.25rem; }
 .rtable { max-width: 38rem; }
+
+/* A3 sub-headings inside a case study section. */
+.case h3 { font-size: 0.9375rem; font-weight: 700; margin: 1.6rem 0 0.7rem; }
+.case section > h3:first-of-type { margin-top: 1.4rem; }

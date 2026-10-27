@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>PSCO Electricity Demand Forecasting</title>
-<meta name="description" content="24-hour-ahead load forecasting for the PSCO balancing authority: 5.00% MAPE on unseen 2025 data, 24.5% better than a persistence baseline.">
+<meta name="description" content="24-hour-ahead load forecasting for the PSCO balancing authority: problem, root cause, countermeasure and result. 5.00% MAPE on unseen 2025 data, 24.5% better than persistence.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap">
@@ -22,7 +22,7 @@
   <div class="casehead">
     <h1>PSCO Electricity Demand Forecasting</h1>
     <p class="field">24-hour-ahead load forecasting and peak-demand analysis</p>
-    <p class="lede">An end-to-end forecasting workflow for the Public Service Company of Colorado balancing authority, built on six years of EIA hourly demand and NOAA weather data, and delivered as an operational Power BI report.</p>
+    <p class="lede">An end-to-end forecasting workflow for the Public Service Company of Colorado balancing authority, built on six years of EIA hourly demand and NOAA weather data and delivered as an operational Power BI report.</p>
   </div>
 
   <div class="casemeta">
@@ -33,52 +33,71 @@
   </div>
 
   <section>
-    <h2>The business problem</h2>
-    <p>An electric utility has to balance supply and demand continuously. Short-term load forecasts drive generation planning, resource scheduling, capacity management and peak-demand preparation, and the cost of being wrong runs in both directions: under-forecast the peak and reliability is at risk, over-forecast it and the utility pays for capacity it never uses.</p>
-    <p>The question this project set out to answer was specific: <strong>how much electricity should the PSCO system expect for each hour of the following day, and when is it most likely to peak?</strong></p>
-    <p>That meant a 24-hour-ahead hourly forecast that beats a realistic operational benchmark, flags high-demand periods, quantifies its own error, explains what drives demand, and reaches stakeholders as something they can interrogate rather than a number handed over.</p>
+    <h2>Problem</h2>
+    <p>An electric utility balances supply and demand continuously. Short-term load forecasts drive generation planning, resource scheduling, capacity management and peak preparation, and the cost of error runs in both directions: under-forecast the peak and reliability is at risk, over-forecast it and the utility pays for capacity it never uses.</p>
+    <p>The question was specific. <strong>How much electricity should the PSCO system expect for each hour of the following day, and when is it most likely to peak?</strong></p>
+
+    <h3>Current state</h3>
+    <p>The operational default for this kind of forecast is persistence: use demand from the same hour yesterday. It is not a strawman. Electricity demand is highly self-similar day to day, and over 2025 persistence achieved <strong>6.63% MAPE</strong>, with mean absolute error of 344.97 MWh. Any replacement has to beat that to be worth operating, so persistence was kept as the benchmark from the first day of the project to the last.</p>
+
+    <h3>Target condition</h3>
+    <p>A 24-hour-ahead hourly forecast that beats persistence measurably, flags high-demand periods, quantifies its own error rather than reporting a single average, explains what drives demand, and reaches planners as something they can interrogate.</p>
   </section>
 
   <section>
-    <h2>The data</h2>
-    <p>Two public sources, both on real operational cadence.</p>
+    <h2>Root cause</h2>
+    <p>Two separate causes were driving forecast error. Only one of them is about models.</p>
+
+    <h3>Cause 1 — persistence has no mechanism to respond to change</h3>
+    <p>Persistence propagates history and nothing else. It carries yesterday's weather, yesterday's day-of-week and yesterday's shape forward unchanged, so every time conditions move, the forecast is wrong by exactly the size of that move, one day late.</p>
+
+    <figure class="fig">
+      <img src="fc-week.jpg" alt="Hourly demand across a week in July 2025, comparing actual demand with the 24-hour persistence baseline and the Random Forest forecast.">
+      <figcaption>The failure mode, visible in one week of July 2025. The persistence baseline (dashed) is the previous day's curve shifted forward: it overshoots badly through the 17th and undershoots the following morning. The error is not noise, it is a systematic one-day lag.</figcaption>
+    </figure>
+
+    <p>Demand also responds to temperature <em>nonlinearly</em> and in both directions, rising for heating at one extreme and cooling at the other. Training-window temperatures ran from about -22&#8457; to 101&#8457;. No amount of historical propagation captures that, because the relationship is to today's weather, not yesterday's demand.</p>
+
+    <figure class="fig">
+      <img src="fc-temp.jpg" alt="Scatter plot of hourly demand against temperature, showing demand rising at both low and high temperature extremes.">
+      <figcaption>Demand against temperature, turning upward at both ends. This V-shape is why temperature alone is insufficient as a feature and why heating degree, cooling degree and temperature squared were added.</figcaption>
+    </figure>
+
+    <h3>Cause 2 — the data would have broken the model before the model could fail</h3>
+    <p>Demand and weather arrive from different systems with different time conventions, and in this problem the usual failure is not a weak algorithm. It is a quietly corrupted dataset that produces a confident, wrong model:</p>
     <ul>
-      <li><strong>Electricity demand</strong> from the EIA-930 dataset for the PSCO balancing authority, roughly <strong>52,500 hourly observations</strong> spanning 2020 to 2025.</li>
-      <li><strong>Weather</strong> from NOAA Local Climatological Data at Denver International Airport (station USW00003017): dry-bulb temperature, relative humidity, dew point and wind speed, chosen because consumption tracks heating and cooling need.</li>
+      <li>EIA timestamps are Denver local time, NOAA observations are fixed Mountain Standard Time. Merging them as given misaligns weather against demand by an hour for half the year.</li>
+      <li>The demand series contains genuine gaps, including a roughly five-day hole in 2023 that the EIA API itself returns short. Building lag features by row shifting would silently misalign every subsequent value.</li>
+      <li>Rolling features computed at the prediction timestamp, rather than the forecast origin, leak future demand into training and produce a model that looks excellent and cannot be operated.</li>
     </ul>
-    <p>The EIA API caps how many observations a single request returns, so demand was pulled year by year with pagination and each year's row count checked against the API's own reported total, rather than assuming a download was complete.</p>
+    <p>These are root causes of forecast failure in the same sense as the first one, and they were addressed first.</p>
   </section>
 
   <section>
-    <h2>Data quality, where most of the work was</h2>
-    <p>The two sources came from different systems with different time conventions, and reconciling them honestly mattered more to the final result than model choice did.</p>
+    <h2>Countermeasure</h2>
+
+    <h3>1. Make the data trustworthy</h3>
     <ol>
-      <li><strong>Source gaps, found rather than assumed.</strong> Comparing downloaded counts against API totals surfaced a roughly five-day hole in the 2023 demand series that the API itself returned short. Knowing it was a source gap and not a download failure changed how it was handled.</li>
-      <li><strong>Missing demand was excluded, not imputed.</strong> Demand is the target variable. Imputing it would have inflated apparent accuracy by scoring the model against numbers it had effectively been given.</li>
-      <li><strong>Timezone reconciliation.</strong> EIA timestamps were read as America/Denver, NOAA as fixed Mountain Standard Time; both were converted to UTC, merged on UTC, then converted back to Mountain Time for calendar analysis. Without that, weather and demand would have been joined hours apart for half the year.</li>
-      <li><strong>Daylight-saving ambiguity.</strong> A small number of transition-hour timestamps could not be resolved unambiguously and were dropped rather than guessed at.</li>
-      <li><strong>Weather gaps, handled by length.</strong> Around 140 merged rows arrived without weather. Gaps of three hours or less were interpolated; longer ones were not. A 2025 NOAA outage running about <strong>91 consecutive hours</strong> was excluded outright, because interpolating four days of weather is inventing it.</li>
-      <li><strong>Anomalies flagged, not corrected.</strong> Negative, zero and extreme demand values were treated as source anomalies and removed from training rather than silently adjusted.</li>
+      <li><strong>Verified ingestion.</strong> Demand pulled year by year with pagination, each year's row count checked against the API's own reported total rather than assuming the download was complete. This is what surfaced the 2023 source gap.</li>
+      <li><strong>Timezone reconciliation.</strong> EIA read as America/Denver, NOAA as fixed MST, both converted to UTC, merged on UTC, then converted back to Mountain Time for calendar analysis.</li>
+      <li><strong>Daylight-saving ambiguity dropped.</strong> Transition-hour timestamps that could not be resolved unambiguously were excluded rather than guessed.</li>
+      <li><strong>Missing demand excluded, never imputed.</strong> Demand is the target. Imputing it scores the model against numbers it was effectively given.</li>
+      <li><strong>Weather gaps handled by length.</strong> Gaps of three hours or less interpolated; longer ones excluded. A 2025 NOAA outage of about <strong>91 consecutive hours</strong> was dropped, because interpolating four days of weather is inventing it.</li>
+      <li><strong>Anomalies flagged, not corrected.</strong> Negative, zero and extreme demand values treated as source anomalies and removed from training.</li>
     </ol>
-  </section>
 
-  <section>
-    <h2>Feature engineering</h2>
-    <p>Temperature in the training window ranged from about -22&#8457; to 101&#8457;, so the features had to carry both winter heating and summer cooling response.</p>
+    <h3>2. Give the model what persistence lacks</h3>
     <ul>
       <li><strong>Calendar:</strong> hour, day of week, month, day of year, weekend and holiday indicators.</li>
-      <li><strong>Cyclical:</strong> hour and day-of-year encoded as sine and cosine pairs, so hour 23 sits next to hour 0 and December next to January instead of at opposite ends of a number line.</li>
-      <li><strong>Weather:</strong> raw temperature, humidity, dew point and wind speed, plus heating degree, cooling degree and temperature squared to capture the nonlinear response at extremes.</li>
-      <li><strong>Historical demand:</strong> lags at 24, 48 and 168 hours, with 24-hour rolling mean and rolling max.</li>
+      <li><strong>Cyclical:</strong> hour and day-of-year as sine and cosine pairs, so hour 23 sits beside hour 0 rather than at the opposite end of a number line.</li>
+      <li><strong>Weather:</strong> temperature, humidity, dew point, wind speed, plus heating degree, cooling degree and temperature squared for the nonlinear response.</li>
+      <li><strong>Historical demand:</strong> lags at 24, 48 and 168 hours with 24-hour rolling mean and rolling max, so the model keeps what persistence was right about.</li>
     </ul>
-    <p>Two decisions here protected the result. Lags were built by <strong>timestamp lookup rather than row shifting</strong>, because the series contains genuine gaps and a row shift would have silently misaligned every subsequent value. And rolling features were anchored to the <strong>forecast origin</strong>, not the prediction timestamp, so a 24-hour-ahead forecast only ever saw information available 24 hours earlier. Without that anchor, future demand leaks into training and the model looks far better than it is.</p>
-  </section>
 
-  <section>
-    <h2>Modeling strategy</h2>
-    <p>Training ran on <strong>2020 to 2023</strong>, validation on <strong>2024</strong>, and final evaluation on <strong>2025</strong>, held back untouched until model selection was finished. No random split was used: randomly shuffling a time series lets future observations inform past predictions, which is not a mistake a backtest recovers from.</p>
-    <p>Five approaches were compared, with a <strong>24-hour persistence baseline</strong> kept throughout. Persistence predicts each hour using demand from exactly 24 hours earlier, and it is a genuinely strong predictor, which is what makes it the honest benchmark. A forecast that cannot beat yesterday is not worth operating.</p>
+    <h3>3. Close the leakage paths</h3>
+    <p>Lags built by <strong>timestamp lookup, not row shifting</strong>, so real gaps cannot misalign the series. Rolling features anchored to the <strong>forecast origin</strong>, so a 24-hour-ahead prediction only ever sees information available 24 hours earlier. Validation run <strong>chronologically</strong>: train on 2020 to 2023, validate on 2024, hold 2025 back untouched. No random split, because shuffling a time series lets future observations inform past predictions.</p>
 
+    <h3>4. Compare against the benchmark, not against hope</h3>
     <div class="tablewrap">
       <table class="rtable">
         <tr><th>2024 validation</th><th>MAPE</th><th>MAE</th><th>RMSE</th></tr>
@@ -89,96 +108,52 @@
         <tr><td>Persistence baseline</td><td>6.69%</td><td>347.28</td><td>458.57</td></tr>
       </table>
     </div>
-
-    <p>The three tree ensembles landed within 0.01 percentage points of each other. That near-tie is itself the finding: the lift came from the engineered lag, rolling, weather and calendar features rather than from the choice of algorithm. Random Forest was selected on validation and retrained on everything through 2024.</p>
+    <p>The three tree ensembles landed within 0.01 percentage points of each other. That near-tie is itself a finding: the gain came from the engineered features, not the choice of algorithm. Random Forest was selected on validation and retrained on everything through 2024.</p>
   </section>
 
   <section>
-    <h2>Results on unseen 2025 data</h2>
+    <h2>Result</h2>
     <div class="tablewrap">
       <table class="rtable">
-        <tr><th>Metric</th><th>Random Forest</th><th>Persistence baseline</th></tr>
+        <tr><th>2025 holdout</th><th>Random Forest</th><th>Persistence baseline</th></tr>
         <tr><td>MAPE</td><td>5.00%</td><td>6.63%</td></tr>
         <tr><td>MAE</td><td>259.50 MWh</td><td>344.97 MWh</td></tr>
         <tr><td>RMSE</td><td>338.78 MWh</td><td>458.50 MWh</td></tr>
       </table>
     </div>
-    <p>A <strong>24.54% relative reduction in MAPE</strong> against the persistence baseline, and validation performance held on the holdout year rather than degrading, which suggests the leakage controls did their job.</p>
-
-    <figure class="fig">
-      <img src="fc-week.jpg" alt="Line chart of hourly demand across a week in July 2025, comparing actual demand with the 24-hour persistence baseline and the Random Forest forecast.">
-      <figcaption>A week in July 2025. The persistence baseline (dashed) lags the actual series by a day, overshooting on the 17th and undershooting the following morning. The Random Forest tracks the daily shape, including the overnight trough and the evening ramp.</figcaption>
-    </figure>
+    <p>A <strong>24.54% relative reduction in MAPE</strong> against the operating benchmark. Validation performance held on the holdout year rather than degrading, which is the evidence that the leakage controls worked.</p>
 
     <figure class="fig">
       <img src="fc-drivers.png" alt="Horizontal bar chart of the top fifteen Random Forest feature importances, led by lag_24, lag_48 and lag_168.">
-      <figcaption>Feature importance. The three demand lags carry about 60% of the signal between them, with cyclical hour and the rolling peak next. Weather earns its place at the margins, which is where the gain over persistence comes from.</figcaption>
+      <figcaption>Where the result came from. The three demand lags carry roughly 60% of the signal, confirming persistence was right about the bulk of the problem. Cyclical hour, rolling peak and the weather terms supply the margin that persistence could not reach.</figcaption>
     </figure>
-  </section>
 
-  <section>
-    <h2>Where the forecast is weakest</h2>
-    <p>Average accuracy hides a great deal, so error was examined by hour, by month and by direction.</p>
-
+    <h3>Where the countermeasure is still weak</h3>
     <figure class="fig">
       <img src="fc-error-hour.png" alt="Line chart of mean absolute percentage error by hour of day across 2025.">
-      <figcaption>Error by hour of day. Accuracy is not uniform across the daily cycle, which matters because the hours that set system peak are not the hours the model finds easiest.</figcaption>
+      <figcaption>Error by hour of day. Accuracy is not uniform across the daily cycle, and the hours that set system peak are not the hours the model finds easiest.</figcaption>
     </figure>
+    <p><strong>Peak prediction is a separate problem from average accuracy.</strong> A model can post a strong overall MAPE while still underestimating extreme demand, and for a utility the peak drives capacity decisions. Peak magnitude and peak timing are therefore scored as their own measures rather than folded into an average.</p>
 
-    <p><strong>Peak-load prediction needed separate treatment.</strong> A model can post a strong overall MAPE while still underestimating extreme system demand, and for a utility the peak is the number that drives capacity decisions. The dashboard therefore scores peak magnitude and peak timing as their own measures rather than folding them into an average.</p>
-
-    <figure class="fig">
-      <img src="fc-temp.jpg" alt="Scatter plot of hourly demand against temperature, showing demand rising at both low and high temperature extremes.">
-      <figcaption>Demand against temperature. The curve turns upward at both ends, heating demand on the left and cooling on the right, which is why temperature squared and the degree-day features were added rather than temperature alone.</figcaption>
-    </figure>
-  </section>
-
-  <section>
-    <h2>Reporting in Power BI</h2>
-    <p>The 2025 forecast results were built into a three-page operational report.</p>
+    <h3>Handover</h3>
+    <p>Results were built into a three-page Power BI report so the finding survives past the analysis:</p>
     <ol>
-      <li><strong>Executive forecast overview.</strong> MAPE, MAE, RMSE, baseline MAPE and relative error reduction as KPIs, with actual against predicted daily demand across 2025, filterable by date range, season and weekday or weekend, plus actual and forecast system peaks.</li>
-      <li><strong>Forecast performance and error analysis.</strong> MAPE by month, baseline against model, error by hour, actual against predicted, the error distribution, over- against under-forecasting, and peak-hour performance. This page exists to show where the forecast stops being reliable.</li>
-      <li><strong>Demand drivers and load patterns.</strong> Temperature against demand, average hourly load profiles, weekday against weekend, seasonal behaviour, lag comparisons, rolling demand and feature importance, so stakeholders can see why demand moves instead of being handed a black box.</li>
+      <li><strong>Executive overview.</strong> MAPE, MAE, RMSE, baseline MAPE and relative error reduction as KPIs, actual against predicted daily demand across 2025, filterable by date range, season and weekday or weekend, with actual and forecast system peaks.</li>
+      <li><strong>Performance and error analysis.</strong> MAPE by month, baseline against model, error by hour, the error distribution, over- against under-forecasting, and peak-hour performance. This page exists to show where the forecast stops being reliable.</li>
+      <li><strong>Demand drivers.</strong> Temperature against demand, hourly load profiles, weekday against weekend, seasonal behaviour, lag comparisons and feature importance, so planners see why demand moves instead of being handed a black box.</li>
     </ol>
   </section>
 
   <section>
-    <h2>What the analysis showed</h2>
+    <h2>Follow-up</h2>
+    <p>One limitation is structural and worth stating plainly: the backtest uses <strong>observed</strong> historical weather. A production system would run on weather <em>forecasts</em> available at prediction time, which carry their own error, so these figures are an upper bound on what the same features deliver live. Utility-specific inputs that would likely improve it further were outside public data: customer-class demand, distributed solar, outages, demand-response events, pricing and industrial activity.</p>
+    <p>Next countermeasures, in the order I would take them:</p>
     <ul>
-      <li>Historical load is overwhelmingly the strongest predictor. Day-to-day and week-to-week persistence in electricity demand is high, which is exactly why the persistence baseline is hard to beat.</li>
-      <li>Weather is what produces the margin over that baseline, and it matters most during elevated heating or cooling periods.</li>
-      <li>Summer demand runs substantially higher, and the intraday profile repeats reliably enough to support load planning and operational staffing.</li>
-      <li>Strong average accuracy and good peak prediction are different problems and need to be measured separately.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Tradeoffs I made deliberately</h2>
-    <ul>
-      <li>Missing target demand excluded rather than imputed, to avoid fabricating the quantity being predicted.</li>
-      <li>Short weather gaps interpolated, long outages excluded, with the line drawn at three hours.</li>
-      <li>Timestamp-based lags over row shifting, because the series has real gaps.</li>
-      <li>Tree ensembles over deep learning. They matched the performance that mattered while staying fast to develop and straightforward to explain through feature importance, which the reporting depended on.</li>
-      <li>The persistence baseline kept in every comparison from start to finish.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Limitations</h2>
-    <p>The backtest uses <strong>observed</strong> historical weather. A production 24-hour-ahead system would have to run on weather <em>forecasts</em> available at prediction time, which carry their own error, so these figures should be read as an upper bound on what the same features would deliver live.</p>
-    <p>Utility-specific inputs that would likely improve it further were out of reach in public data: customer-class demand, distributed solar generation, outages, demand-response events, pricing, industrial activity, major events and additional weather stations.</p>
-    <p>This is a rigorous historical forecasting framework rather than a productionised utility platform, and the distinction is worth stating plainly.</p>
-  </section>
-
-  <section>
-    <h2>What I would do next</h2>
-    <ul>
-      <li>Swap observed weather for operational forecasts, and re-measure honestly against the degradation that causes.</li>
-      <li>Add prediction intervals so planners see uncertainty, not just a point estimate.</li>
-      <li>Train a dedicated peak-demand model rather than reading peaks off an hourly forecast.</li>
+      <li>Swap observed weather for operational forecasts and re-measure honestly against the degradation that causes.</li>
+      <li>Add prediction intervals, so planners see uncertainty rather than a point estimate.</li>
+      <li>Train a dedicated peak-demand model instead of reading peaks off an hourly forecast.</li>
       <li>Automate daily scoring with drift monitoring and a scheduled Power BI refresh.</li>
-      <li>Hyperparameter optimisation for the gradient-boosted models and time-series cross-validation, plus additional weather stations.</li>
+      <li>Hyperparameter optimisation for the boosted models, time-series cross-validation, and additional weather stations.</li>
     </ul>
   </section>
 
