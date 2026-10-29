@@ -220,7 +220,7 @@ footer { padding-block: 2.5rem 3rem; color: var(--ink-2); font-size: 0.8125rem; 
 .casehead h1 { font: 400 clamp(1.9rem, 4.6vw, 3rem)/1.06 var(--serif); letter-spacing: -0.015em; max-width: 20ch; }
 .casehead .field { color: var(--ink-2); font-size: 0.9375rem; }
 .lede { font-size: 1rem; line-height: 1.6; max-width: 62ch; }
-.casemeta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); margin-bottom: 0.5rem; }
+.casemeta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); margin-bottom: 0.5rem; }
 .casemeta div { background: var(--paper); padding: 0.9rem 0.6rem 0.9rem 0; }
 .casemeta b { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.02em; }
 .casemeta span { display: block; color: var(--ink-2); font-size: 0.8125rem; margin-top: 0.2rem; line-height: 1.35; }
