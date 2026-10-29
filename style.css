@@ -88,7 +88,7 @@ figcaption { color: var(--ink-2); font-size: 0.8125rem; max-width: 46ch; }
 .key .f i { border-top-style: dashed; border-color: var(--signal); }
 
 /* Readout strip */
-.readout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); margin-block: 0.5rem 0; }
+.readout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); margin-block: 0.5rem 0; }
 .readout div { background: var(--paper); padding: 1.1rem 0.5rem 1.1rem 0; }
 .readout b { display: block; font: 800 clamp(1.25rem, 2.7vw, 1.65rem)/1 var(--sans); letter-spacing: -0.02em; }
 .readout span { display: block; margin-top: 0.35rem; color: var(--ink-2); font-size: 0.8125rem; line-height: 1.3; max-width: 17ch; }
@@ -191,7 +191,7 @@ footer { padding-block: 2.5rem 3rem; color: var(--ink-2); font-size: 0.8125rem; 
   .entries, .list { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
-  .readout { grid-template-columns: 1fr 1fr; }
+  .readout { grid-template-columns: 1fr; }
   .cinfo { grid-template-columns: 1fr; gap: 1.1rem; }
   .tools { grid-template-columns: repeat(2, 1fr); }
   .tab { font-size: 0.8125rem; padding: 0.4rem 0.7rem; }
